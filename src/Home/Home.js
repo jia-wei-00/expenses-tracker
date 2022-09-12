@@ -5,6 +5,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import { connect } from "react-redux";
 import { postRecord, getRecordAPI, deleteRecordAPI } from "../actions";
 import firebase from "firebase/compat/app";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+// import "bootstrap/dist/css/bootstrap.min.css";
 
 const Home = (props) => {
   const [type, setType] = useState("expense");
@@ -13,6 +16,35 @@ const Home = (props) => {
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [balance, setBalance] = useState(0);
+  const [modalShow, setModalShow] = React.useState(false);
+
+  function EditModal(props) {
+    return (
+      <Modal
+        {...props}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Modal heading
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4>Centered Modal</h4>
+          <p>
+            Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
+            dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
+            ac consectetur ac, vestibulum at eros.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onHide}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
 
   const monthNames = [
     "January",
@@ -127,7 +159,7 @@ const Home = (props) => {
               <span onClick={() => handleDelete(record.id)} className="delete">
                 <DeleteForeverIcon />
               </span>
-              <span className="edit">
+              <span className="edit" onClick={() => setModalShow(true)}>
                 <EditIcon />
               </span>
             </div>
@@ -187,6 +219,8 @@ const Home = (props) => {
           Add Transaction
         </button>
       </div>
+
+      <EditModal show={modalShow} onHide={() => setModalShow(false)} />
     </div>
   );
 };
