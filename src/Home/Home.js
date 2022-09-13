@@ -150,7 +150,10 @@ const Home = (props) => {
               <span onClick={() => handleDelete(record.id)} className="delete">
                 <DeleteForeverIcon />
               </span>
-              <span className="edit" onClick={handleOpen(record)}>
+              <span
+                className="edit"
+                onClick={handleOpen(record.name, record.amount)}
+              >
                 <EditIcon />
               </span>
             </div>
