@@ -150,7 +150,7 @@ const Home = (props) => {
               <span onClick={() => handleDelete(record.id)} className="delete">
                 <DeleteForeverIcon />
               </span>
-              <span className="edit" onClick={handleOpen}>
+              <span className="edit" onClick={handleOpen(record)}>
                 <EditIcon />
               </span>
             </div>
@@ -228,8 +228,14 @@ const Home = (props) => {
               Edit
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              <input placeholder={modalName} />
-              <input placeholder={modalAmount} />
+              <div>
+                <h5>Name</h5>
+                <input className="input-edit" placeholder={modalName} />
+              </div>
+              <div>
+                <h5>Amount</h5>
+                <input className="input-edit" placeholder={modalAmount} />
+              </div>
             </Typography>
           </Box>
         </Fade>
