@@ -3,7 +3,12 @@ import "./Home.css";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
 import { connect } from "react-redux";
-import { postRecord, getRecordAPI, deleteRecordAPI } from "../actions";
+import {
+  postRecord,
+  getRecordAPI,
+  deleteRecordAPI,
+  updateRecordAPI,
+} from "../actions";
 import firebase from "firebase/compat/app";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
@@ -33,9 +38,16 @@ const Home = (props) => {
   const [balance, setBalance] = useState(0);
   const [modalName, setModalName] = useState("");
   const [modalAmount, setModalAmount] = useState("");
+  const [modalId, setModalId] = useState("");
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleOpen = (props) => {
+    setModalName(props.name);
+    setModalAmount(props.amount);
+    setModalId(props.id);
+    setOpen(true);
+  };
 
   const monthNames = [
     "January",
@@ -76,6 +88,17 @@ const Home = (props) => {
   const reset = () => {
     setName("");
     setAmount("");
+  };
+
+  const updateRecord = () => {
+    const payload = {
+      name: modalName,
+      amount: modalAmount,
+      id: modalId,
+      date: date,
+    };
+    props.updateRecord(payload);
+    setOpen(false);
   };
 
   const handleDelete = (id) => {
@@ -150,10 +173,7 @@ const Home = (props) => {
               <span onClick={() => handleDelete(record.id)} className="delete">
                 <DeleteForeverIcon />
               </span>
-              <span
-                className="edit"
-                onClick={handleOpen(record.name, record.amount)}
-              >
+              <span className="edit" onClick={() => handleOpen(record)}>
                 <EditIcon />
               </span>
             </div>
@@ -233,13 +253,34 @@ const Home = (props) => {
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <div>
                 <h5>Name</h5>
-                <input className="input-edit" placeholder={modalName} />
+                <input
+                  className="input-edit"
+                  value={modalName}
+                  onChange={(e) => setModalName(e.target.value)}
+                />
               </div>
               <div>
                 <h5>Amount</h5>
-                <input className="input-edit" placeholder={modalAmount} />
+                <input
+                  className="input-edit"
+                  value={modalAmount}
+                  onChange={(e) => setModalAmount(e.target.value)}
+                />
               </div>
             </Typography>
+            <Button
+              variant="outlined"
+              style={{
+                color: "white",
+                border: "1px solid black",
+                marginTop: "10px",
+                background: "black",
+                width: "100%",
+              }}
+              onClick={() => updateRecord()}
+            >
+              Update
+            </Button>
           </Box>
         </Fade>
       </Modal>
@@ -257,6 +298,7 @@ const mapDispatchToProps = (dispatch) => ({
   postRecord: (payload) => dispatch(postRecord(payload)),
   getRecord: (payload) => dispatch(getRecordAPI(payload)),
   deleteRecord: (payload) => dispatch(deleteRecordAPI(payload)),
+  updateRecord: (payload) => dispatch(updateRecordAPI(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
