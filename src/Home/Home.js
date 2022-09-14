@@ -55,9 +55,8 @@ const Home = (props) => {
   };
 
   const handleOpenDelete = (props) => {
-    setModalName(props.name);
-    setModalAmount(props.amount);
     setModalId(props.id);
+    setModalName(props.name);
     setOpenDeleteModal(true);
   };
 
@@ -113,14 +112,15 @@ const Home = (props) => {
     setOpenEditModal(false);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = () => {
     const payload = {
-      id: id,
+      id: modalId,
       date: date,
     };
 
     props.deleteRecord(payload);
     calculateAmount();
+    setOpenDeleteModal(false);
   };
 
   const calculateAmount = async () => {
@@ -317,7 +317,13 @@ const Home = (props) => {
               Confirm Delete "{modalName}"?
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+              <Button
+                onClick={() => handleDelete()}
+                variant="outlined"
+                color="error"
+              >
+                DELETE
+              </Button>
             </Typography>
           </Box>
         </Fade>
