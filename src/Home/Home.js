@@ -39,14 +39,26 @@ const Home = (props) => {
   const [modalName, setModalName] = useState("");
   const [modalAmount, setModalAmount] = useState("");
   const [modalId, setModalId] = useState("");
-  const [open, setOpen] = useState(false);
-  const handleClose = () => setOpen(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
-  const handleOpen = (props) => {
+  const handleClose = () => {
+    setOpenEditModal(false);
+    setOpenDeleteModal(false);
+  };
+
+  const handleOpenEdit = (props) => {
     setModalName(props.name);
     setModalAmount(props.amount);
     setModalId(props.id);
-    setOpen(true);
+    setOpenEditModal(true);
+  };
+
+  const handleOpenDelete = (props) => {
+    setModalName(props.name);
+    setModalAmount(props.amount);
+    setModalId(props.id);
+    setOpenDeleteModal(true);
   };
 
   const monthNames = [
@@ -98,7 +110,7 @@ const Home = (props) => {
       date: date,
     };
     props.updateRecord(payload);
-    setOpen(false);
+    setOpenEditModal(false);
   };
 
   const handleDelete = (id) => {
@@ -170,10 +182,10 @@ const Home = (props) => {
                   {record.amount}
                 </p>
               </div>
-              <span onClick={() => handleDelete(record.id)} className="delete">
+              <span onClick={() => handleOpenDelete(record)} className="delete">
                 <DeleteForeverIcon />
               </span>
-              <span className="edit" onClick={() => handleOpen(record)}>
+              <span className="edit" onClick={() => handleOpenEdit(record)}>
                 <EditIcon />
               </span>
             </div>
@@ -234,10 +246,11 @@ const Home = (props) => {
         </button>
       </div>
 
+      {/* EditModal */}
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={open}
+        open={openEditModal}
         onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
@@ -245,7 +258,7 @@ const Home = (props) => {
           timeout: 500,
         }}
       >
-        <Fade in={open}>
+        <Fade in={openEditModal}>
           <Box sx={style}>
             <Typography id="transition-modal-title" variant="h6" component="h2">
               Edit
@@ -284,6 +297,32 @@ const Home = (props) => {
           </Box>
         </Fade>
       </Modal>
+      {/* Edit Modal End */}
+
+      {/* Confirm Delete Popup */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openDeleteModal}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={openDeleteModal}>
+          <Box sx={style}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Confirm Delete "{modalName}"?
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
+      {/* End Popup */}
     </div>
   );
 };
