@@ -150,7 +150,7 @@
   margin-top: 10px;
 }
 
-.transaction > input {
+.transaction > form > input {
   width: 100%;
   border-radius: 5px;
   border: none;
@@ -168,12 +168,13 @@
 
 .add {
   width: 100%;
-  margin: 30px 0;
+  margin: 20px 0;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .add:hover {
   background: #29fd53;
   color: black;
-  border: 1px solid var(--clr);
   transition: 0.5s;
 }

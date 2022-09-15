@@ -206,44 +206,36 @@ const Home = (props) => {
           Income
         </button>
 
-        {type === "expense" ? (
-          <>
-            <p className="t__title">Name</p>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter expense name..."
-            />
-            <p className="t__title">Amount</p>
-            <input
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Enter expense amount..."
-              type="number"
-            />
-          </>
-        ) : (
-          <>
-            <p className="t__title">Name</p>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter income name..."
-            />
-            <p className="t__title">Amount</p>
-            <input
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="t__title"
-              type="number"
-              placeholder="Enter income amount..."
-            />
-          </>
-        )}
+        <form onSubmit={(event) => handlePostRecord(event)}>
+          <p className="t__title">Name</p>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={
+              type === "expense"
+                ? "Enter expense name..."
+                : "Enter income name..."
+            }
+            type="text"
+            required
+          />
+          <p className="t__title">Amount</p>
+          <input
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder={
+              type === "expense"
+                ? "Enter expense amount..."
+                : "Enter income amount..."
+            }
+            type="number"
+            required
+          />
 
-        <button onClick={(event) => handlePostRecord(event)} className="add">
-          Add Transaction
-        </button>
+          <button type="submit" className="add">
+            Add Transaction
+          </button>
+        </form>
       </div>
 
       {/* EditModal */}

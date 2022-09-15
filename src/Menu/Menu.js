@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Menu.css";
 import PaidIcon from "@mui/icons-material/Paid";
 import HistoryIcon from "@mui/icons-material/History";
+import { Link } from "react-router-dom";
 
 function Menu() {
   const [active, setActive] = useState("home");
@@ -13,24 +14,24 @@ function Menu() {
           className={active === "home" ? "list active" : "list"}
           onClick={() => setActive("home")}
         >
-          <a href="#">
+          <Link to="/Home">
             <span className="icon">
               <PaidIcon />
             </span>
             <span className="text">Home</span>
-          </a>
+          </Link>
         </li>
 
         <li
           className={active === "settings" ? "list active" : "list"}
           onClick={() => setActive("settings")}
         >
-          <a href="#">
+          <Link to="/History">
             <span className="icon">
               <HistoryIcon />
             </span>
             <span className="text">History</span>
-          </a>
+          </Link>
         </li>
         <div className="indicator"></div>
       </ul>
