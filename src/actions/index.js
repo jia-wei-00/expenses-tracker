@@ -1,9 +1,14 @@
 import { auth } from "../firebase";
 import db from "../firebase";
-import { SET_USER, GET_RECORD, SET_LOADING } from "./actionType";
+import { SET_USER, GET_RECORD, SET_LOADING, GET_HISTORY } from "./actionType";
 
 export const getRecord = (payload) => ({
   type: GET_RECORD,
+  payload: payload,
+});
+
+export const getHistory = (payload) => ({
+  type: GET_HISTORY,
   payload: payload,
 });
 
@@ -32,6 +37,21 @@ export function getRecordAPI(data) {
         });
         dispatch(getRecord(payload));
       });
+  };
+}
+
+export function getHistoryAPI() {
+  return (dispatch) => {
+    let payload;
+
+    db.collection.orderBy("desc").onSnapshot((snapshot) => {
+      payload = snapshot.map((doc) => {
+        const data = doc.data();
+        return { data };
+      });
+
+      dispatch(getHistory(payload));
+    });
   };
 }
 

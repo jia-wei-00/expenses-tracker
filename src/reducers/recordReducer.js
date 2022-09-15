@@ -1,7 +1,8 @@
-import { GET_RECORD } from "../actions/actionType";
+import { GET_RECORD, GET_HISTORY } from "../actions/actionType";
 
 export const iniState = {
   record: [],
+  history: [],
 };
 
 const recordReducer = (state = iniState, action) => {
@@ -10,6 +11,11 @@ const recordReducer = (state = iniState, action) => {
       return {
         ...state,
         record: action.payload,
+      };
+    case GET_HISTORY:
+      return {
+        ...state,
+        history: action.payload,
       };
     default:
       return state;
