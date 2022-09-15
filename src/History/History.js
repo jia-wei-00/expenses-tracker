@@ -24,7 +24,7 @@ const History = (props) => {
         onChange={(e) => setDate(e.target.value)}
       />
       <Button onClick={() => fetchRecord()} variant="outlined" color="error">
-        Search
+        SEARCH
       </Button>
       {/* <h3>Balance ({date})</h3>
       <span>RM{balance}</span>
