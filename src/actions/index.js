@@ -40,18 +40,20 @@ export function getRecordAPI(data) {
   };
 }
 
-export function getHistoryAPI() {
+export function getHistoryAPI(data) {
   return (dispatch) => {
     let payload;
 
-    db.collection.orderBy("desc").onSnapshot((snapshot) => {
-      payload = snapshot.map((doc) => {
-        const data = doc.data();
-        return { data };
+    db.collection(data)
+      .orderBy("timestamp", "asc")
+      .onSnapshot((snapshot) => {
+        payload = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          return { id, ...data };
+        });
+        dispatch(getHistory(payload));
       });
-
-      dispatch(getHistory(payload));
-    });
   };
 }
 

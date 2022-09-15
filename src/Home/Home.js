@@ -16,6 +16,7 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import Moment from "moment";
 
 const style = {
   position: "absolute",
@@ -60,26 +61,8 @@ const Home = (props) => {
     setOpenDeleteModal(true);
   };
 
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  let timestamp = firebase.firestore.Timestamp.now();
-  let date =
-    monthNames[timestamp.toDate().getMonth()] +
-    " " +
-    timestamp.toDate().getFullYear();
+  let timestamp = firebase.firestore.Timestamp.now().toDate();
+  let date = Moment(timestamp).format("MMMM YYYY");
 
   const handlePostRecord = (e) => {
     e.preventDefault();

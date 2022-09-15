@@ -1,19 +1,31 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import "./History.css";
 import { getHistoryAPI } from "../actions";
 import { connect } from "react-redux";
+import Moment from "moment";
+import Button from "@mui/material/Button";
 
 const History = (props) => {
-  useEffect(() => {
-    const fetchRecord = async () => {
-      await props.getHistory();
-    };
+  const [date, setDate] = useState("");
 
-    fetchRecord().catch(console.error);
-  }, []);
+  let tmpDate = Moment(date).format("MMMM YYYY");
+
+  const fetchRecord = async () => {
+    await props.getRecord(tmpDate);
+  };
+
+  console.log(props.history);
+
   return (
     <div className="history-page">
-      {props.history}
+      <input
+        value={date}
+        type="month"
+        onChange={(e) => setDate(e.target.value)}
+      />
+      <Button onClick={() => fetchRecord()} variant="outlined" color="error">
+        Search
+      </Button>
       {/* <h3>Balance ({date})</h3>
       <span>RM{balance}</span>
       <div className="record__box">
@@ -58,7 +70,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  getHistory: () => dispatch(getHistoryAPI()),
+  getRecord: (payload) => dispatch(getHistoryAPI(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(History);
