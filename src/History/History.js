@@ -35,20 +35,21 @@ const History = (props) => {
   };
 
   useEffect(() => {
+    fetchRecord();
     calculateAmount();
-  }, [props.history.length]);
+  }, [props.history.length, date]);
 
   return (
     <div className="history-page">
       <h1 className="title">History</h1>
-      <input
-        value={date}
-        type="month"
-        onChange={(e) => setDate(e.target.value)}
-      />
-      <Button onClick={() => fetchRecord()} variant="outlined" color="error">
-        SEARCH
-      </Button>
+      <form>
+        <input
+          value={date}
+          type="month"
+          onChange={(e) => setDate(e.target.value)}
+        />
+      </form>
+
       <div className="history__container">
         <h3>Balance ({tmpDate})</h3>
         <span>RM{balance}</span>

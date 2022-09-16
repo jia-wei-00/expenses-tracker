@@ -5,6 +5,11 @@
   max-width: 500px;
 }
 
+.history-page > form > input {
+  height: 35px;
+  margin-right: 10px;
+}
+
 .history-page > .title {
   font-size: 25px;
   font-weight: 300;
