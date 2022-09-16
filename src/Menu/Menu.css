@@ -103,8 +103,11 @@
 }
 
 .navigation ul li:nth-child(1).active ~ .indicator {
-  transform: translateX(calc(-35px));
+  transform: translateX(calc(-70px));
 }
 .navigation ul li:nth-child(2).active ~ .indicator {
-  transform: translateX(calc(35px * 1));
+  transform: translateX(calc(70px * 0));
+}
+.navigation ul li:nth-child(3).active ~ .indicator {
+  transform: translateX(calc(70px * 1));
 }

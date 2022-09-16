@@ -30,7 +30,7 @@
 
 @media only screen and (max-width: 425px) {
   .history__container {
-    height: 55vh;
+    height: 54vh;
     overflow-y: auto;
   }
 }
