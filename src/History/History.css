@@ -31,6 +31,7 @@
 @media only screen and (max-width: 425px) {
   .home-container {
     height: 61vh;
+    overflow-y: auto;
   }
 }
 
