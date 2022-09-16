@@ -17,6 +17,15 @@
   overflow-y: auto;
 }
 
+.history__container {
+  max-height: 600px;
+  overflow: hidden;
+}
+
+.history__container::-webkit-scrollbar {
+  width: 0px;
+}
+
 .history__record::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
