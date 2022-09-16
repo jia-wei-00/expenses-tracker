@@ -135,90 +135,97 @@ const Home = (props) => {
   return (
     <div className="home">
       <h1 className="title">Expense Tracker</h1>
-      <h3>Balance ({date})</h3>
-      <span>RM{balance}</span>
-      <div className="record__box">
-        <div className="amount__income">
-          <h4>INCOME</h4>
-          <p>RM{income}</p>
+      <div className="home-container">
+        <h3>Balance ({date})</h3>
+        <span>RM{balance}</span>
+        <div className="record__box">
+          <div className="amount__income">
+            <h4>INCOME</h4>
+            <p>RM{income}</p>
+          </div>
+          <div className="amount__expense">
+            <h4>EXPENSE</h4>
+            <p>RM{expense}</p>
+          </div>
         </div>
-        <div className="amount__expense">
-          <h4>EXPENSE</h4>
-          <p>RM{expense}</p>
-        </div>
-      </div>
-      <h3 className="history__title">History</h3>
+        <h3 className="history__title">History</h3>
 
-      <div className="history">
-        {props.record.length > 0 &&
-          props.record.map((record, key) => (
-            <div
-              className={
-                record.type === "expense" ? "record__expense" : "record__income"
-              }
-              key={key}
-            >
-              <div>
-                <p>{record.name}</p>
-                <p>
-                  {record.type === "expense" ? "-" : "+"}
-                  {record.amount}
-                </p>
+        <div className="history">
+          {props.record.length > 0 &&
+            props.record.map((record, key) => (
+              <div
+                className={
+                  record.type === "expense"
+                    ? "record__expense"
+                    : "record__income"
+                }
+                key={key}
+              >
+                <div>
+                  <p>{record.name}</p>
+                  <p>
+                    {record.type === "expense" ? "-" : "+"}
+                    {record.amount}
+                  </p>
+                </div>
+                <span
+                  onClick={() => handleOpenDelete(record)}
+                  className="delete"
+                >
+                  <DeleteForeverIcon />
+                </span>
+                <span className="edit" onClick={() => handleOpenEdit(record)}>
+                  <EditIcon />
+                </span>
               </div>
-              <span onClick={() => handleOpenDelete(record)} className="delete">
-                <DeleteForeverIcon />
-              </span>
-              <span className="edit" onClick={() => handleOpenEdit(record)}>
-                <EditIcon />
-              </span>
-            </div>
-          ))}
-      </div>
-      <h3 className="history__title">Add Transaction</h3>
-      <div className="transaction">
-        <button
-          className={type === "expense" ? "active" : undefined}
-          onClick={() => setType("expense")}
-        >
-          Expense
-        </button>
-        <button
-          className={type === "income" ? "active" : undefined}
-          onClick={() => setType("income")}
-        >
-          Income
-        </button>
-
-        <form onSubmit={(event) => handlePostRecord(event)}>
-          <p className="t__title">Name</p>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={
-              type === "expense"
-                ? "Enter expense name..."
-                : "Enter income name..."
-            }
-            type="text"
-            required
-          />
-          <p className="t__title">Amount</p>
-          <input
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder={
-              type === "expense"
-                ? "Enter expense amount..."
-                : "Enter income amount..."
-            }
-            type="number"
-            required
-          />
-
-          <button type="submit" className="add">
-            Add Transaction
+            ))}
+        </div>
+        <h3 className="history__title">Add Transaction</h3>
+        <div className="transaction">
+          <button
+            className={type === "expense" ? "active" : undefined}
+            onClick={() => setType("expense")}
+          >
+            Expense
           </button>
-        </form>
+          <button
+            className={type === "income" ? "active" : undefined}
+            onClick={() => setType("income")}
+          >
+            Income
+          </button>
+
+          <form onSubmit={(event) => handlePostRecord(event)}>
+            <p className="t__title">Name</p>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={
+                type === "expense"
+                  ? "Enter expense name..."
+                  : "Enter income name..."
+              }
+              type="text"
+              required
+            />
+            <p className="t__title">Amount</p>
+            <input
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder={
+                type === "expense"
+                  ? "Enter expense amount..."
+                  : "Enter income amount..."
+              }
+              type="number"
+              required
+            />
+
+            <button type="submit" className="add">
+              Add Transaction
+            </button>
+          </form>
+        </div>
       </div>
 
       {/* EditModal */}

@@ -16,6 +16,7 @@ body {
   align-items: center;
   min-height: 100vh;
   background: var(--clr);
+  overflow-y: hidden;
 }
 
 h1 {
