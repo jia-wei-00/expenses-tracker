@@ -8,6 +8,7 @@
 .history-page > form > input {
   height: 35px;
   margin-bottom: 30px;
+  width: 100%;
 }
 
 .history-page > .title {
