@@ -22,7 +22,7 @@
 }
 
 .home-container::-webkit-scrollbar {
-  width: 0px;
+  width: 5px;
   background-color: var(--clr);
   border-radius: 10px;
 }
