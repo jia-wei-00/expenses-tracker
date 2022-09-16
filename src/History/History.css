@@ -28,6 +28,12 @@
   overflow: hidden;
 }
 
+@media only screen and (max-width: 425px) {
+  .home-container {
+    height: 61vh;
+  }
+}
+
 .history__container::-webkit-scrollbar {
   width: 0px;
 }
