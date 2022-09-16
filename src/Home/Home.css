@@ -12,6 +12,7 @@
 .home-container {
   height: 70vh;
   overflow-y: auto;
+  margin-bottom: 100px;
 }
 
 .home-container::-webkit-scrollbar-track {

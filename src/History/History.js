@@ -40,6 +40,7 @@ const History = (props) => {
 
   return (
     <div className="history-page">
+      <h1 className="title">History</h1>
       <input
         value={date}
         type="month"
@@ -48,38 +49,42 @@ const History = (props) => {
       <Button onClick={() => fetchRecord()} variant="outlined" color="error">
         SEARCH
       </Button>
-      <h3>Balance ({tmpDate})</h3>
-      <span>RM{balance}</span>
-      <div className="record__box">
-        <div className="amount__income">
-          <h4>INCOME</h4>
-          <p>RM{income}</p>
+      <div className="history__container">
+        <h3>Balance ({tmpDate})</h3>
+        <span>RM{balance}</span>
+        <div className="record__box">
+          <div className="amount__income">
+            <h4>INCOME</h4>
+            <p>RM{income}</p>
+          </div>
+          <div className="amount__expense">
+            <h4>EXPENSE</h4>
+            <p>RM{expense}</p>
+          </div>
         </div>
-        <div className="amount__expense">
-          <h4>EXPENSE</h4>
-          <p>RM{expense}</p>
-        </div>
-      </div>
-      <h3 className="history__title">History</h3>
+        <h3 className="history__title">History</h3>
 
-      <div className="history">
-        {props.history.length > 0 &&
-          props.history.map((record, key) => (
-            <div
-              className={
-                record.type === "expense" ? "record__expense" : "record__income"
-              }
-              key={key}
-            >
-              <div>
-                <p>{record.name}</p>
-                <p>
-                  {record.type === "expense" ? "-" : "+"}
-                  {record.amount}
-                </p>
+        <div className="history__record">
+          {props.history.length > 0 &&
+            props.history.map((record, key) => (
+              <div
+                className={
+                  record.type === "expense"
+                    ? "record__expense"
+                    : "record__income"
+                }
+                key={key}
+              >
+                <div>
+                  <p>{record.name}</p>
+                  <p>
+                    {record.type === "expense" ? "-" : "+"}
+                    {record.amount}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,8 @@
 .history-page {
   color: white;
   width: 100vw;
+  height: 100vh;
   max-width: 500px;
-  padding: 50px 10px;
-  margin-bottom: 100px;
 }
 
 .history-page > .title {
@@ -11,4 +10,26 @@
   font-weight: 300;
   text-align: center;
   padding: 40px 0;
+}
+
+.history__record {
+  height: 350px;
+  overflow-y: auto;
+}
+
+.history__record::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: var(--clr);
+}
+
+.history__record::-webkit-scrollbar {
+  width: 5px;
+  background-color: var(--clr);
+  border-radius: 10px;
+}
+
+.history__record::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: #555;
 }
