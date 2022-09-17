@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Menu.css";
 import PaidIcon from "@mui/icons-material/Paid";
 import HistoryIcon from "@mui/icons-material/History";
@@ -8,25 +8,12 @@ import IconButton from "@mui/material/IconButton";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { signOutAPI } from "../actions";
 import { connect } from "react-redux";
+import useDetectKeyboardOpen from "use-detect-keyboard-open";
 
 function Menu(props) {
   const [active, setActive] = useState("home");
-  const [show, setShow] = useState(true);
-  const [height, setHeight] = useState();
 
-  useEffect(() => {
-    const handleResize = () => {
-      setHeight(window.innerHeight);
-
-      if (height < 600) {
-        setShow(false);
-      } else if (height >= 600) {
-        setShow(true);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-  }, [window.innerHeight]);
+  const isKeyboardOpen = useDetectKeyboardOpen();
 
   return (
     <>
@@ -39,7 +26,7 @@ function Menu(props) {
           <LogoutIcon />
         </IconButton>
       </div>
-      {show && (
+      {isKeyboardOpen && (
         <div className="navigation">
           <ul>
             <li
