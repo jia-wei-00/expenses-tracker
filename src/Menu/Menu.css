@@ -1,6 +1,7 @@
 .navigation {
-  position: fixed;
+  position: absolute;
   left: 50%;
+  bottom: 10px;
   transform: translateX(-50%);
   bottom: 30px;
   width: 250px;
