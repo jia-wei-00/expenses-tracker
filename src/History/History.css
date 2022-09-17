@@ -5,7 +5,7 @@
   max-width: 500px;
 }
 
-.history-page > form > input {
+.history-page > form > :first-child {
   height: 35px;
   margin-bottom: 30px;
   width: 100%;

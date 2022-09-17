@@ -3,7 +3,7 @@ import "./History.css";
 import { getHistoryAPI } from "../actions";
 import { connect } from "react-redux";
 import Moment from "moment";
-import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 
 const History = (props) => {
   const [date, setDate] = useState("");
@@ -31,7 +31,12 @@ const History = (props) => {
   };
 
   const fetchRecord = async () => {
-    await props.getRecord(tmpDate);
+    const payload = {
+      user: props.user,
+      date: tmpDate,
+    };
+
+    await props.getRecord(payload);
   };
 
   useEffect(() => {
@@ -93,6 +98,7 @@ const History = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    user: state.userState.user.email,
     history: state.recordState.history,
   };
 };

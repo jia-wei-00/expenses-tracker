@@ -68,6 +68,7 @@ const Home = (props) => {
     e.preventDefault();
 
     const payload = {
+      user: props.user,
       type: type,
       date: date,
       name: name,
@@ -86,6 +87,7 @@ const Home = (props) => {
 
   const updateRecord = () => {
     const payload = {
+      user: props.user,
       name: modalName,
       amount: modalAmount,
       id: modalId,
@@ -97,6 +99,7 @@ const Home = (props) => {
 
   const handleDelete = () => {
     const payload = {
+      user: props.user,
       id: modalId,
       date: date,
     };
@@ -125,7 +128,12 @@ const Home = (props) => {
 
   useEffect(() => {
     const fetchRecord = async () => {
-      await props.getRecord(date);
+      const payload = {
+        user: props.user,
+        date: date,
+      };
+
+      await props.getRecord(payload);
       calculateAmount();
     };
 
@@ -318,6 +326,7 @@ const Home = (props) => {
 const mapStateToProps = (state) => {
   return {
     record: state.recordState.record,
+    user: state.userState.user.email,
   };
 };
 

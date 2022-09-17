@@ -111,3 +111,12 @@
 .navigation ul li:nth-child(3).active ~ .indicator {
   transform: translateX(calc(70px * 1));
 }
+
+.logout {
+  position: absolute;
+  width: 100vw;
+  max-width: 500px;
+  display: flex;
+  justify-content: flex-end;
+  top: 40px;
+}
