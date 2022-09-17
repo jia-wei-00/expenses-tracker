@@ -26,7 +26,7 @@ function Menu(props) {
           <LogoutIcon />
         </IconButton>
       </div>
-      {isKeyboardOpen && (
+      {!isKeyboardOpen && (
         <div className="navigation">
           <ul>
             <li
