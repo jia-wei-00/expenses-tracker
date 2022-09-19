@@ -10,6 +10,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import drilldown from "highcharts-drilldown";
 drilldown(Highcharts);
+require("highcharts/modules/exporting")(Highcharts);
 
 const History = (props) => {
   const [date, setDate] = useState(
@@ -58,10 +59,7 @@ const History = (props) => {
       type: "pie",
     },
     title: {
-      text: "Browser market shares. January, 2022",
-    },
-    subtitle: {
-      text: 'Click the slices to view versions. Source: <a href="http://statcounter.com" target="_blank">statcounter.com</a>',
+      text: "Pie Chart",
     },
 
     accessibility: {
@@ -77,7 +75,7 @@ const History = (props) => {
       series: {
         dataLabels: {
           enabled: true,
-          format: "{point.name}: {point.y:.1f}%",
+          format: "{point.name}: RM{point.y:.2f}",
         },
       },
     },
@@ -85,12 +83,12 @@ const History = (props) => {
     tooltip: {
       headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
       pointFormat:
-        '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>',
+        '<span style="color:{point.color}">{point.name}</span>: <b>RM{point.y:.2f}</b> of total<br/>',
     },
 
     series: [
       {
-        name: "Browsers",
+        name: alignment,
         colorByPoint: true,
         data: data,
       },
@@ -244,9 +242,9 @@ const History = (props) => {
           </ToggleButton>
         </ToggleButtonGroup>
 
-        {/* {data.length === props.history.length && ( */}
-        <HighchartsReact highcharts={Highcharts} options={options} />
-        {/* )} */}
+        {data.length > 0 && (
+          <HighchartsReact highcharts={Highcharts} options={options} />
+        )}
 
         <h3 className="history__page__history">History</h3>
 
