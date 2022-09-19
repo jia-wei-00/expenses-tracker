@@ -23,25 +23,6 @@ const History = (props) => {
 
   let tmpDate = Moment(date).format("MMMM YYYY");
 
-  // var data = [
-  // {
-  //   name: "Chrome",
-  //   y: 61.04,
-  // },
-  // {
-  //   name: "Safari",
-  //   y: 9.47,
-  // },
-  // {
-  //   name: "Edge",
-  //   y: 9.32,
-  // },
-  // {
-  //   name: "Firefox",
-  //   y: 8.15,
-  // },
-  // ];
-
   const calculateAmount = async () => {
     let tmpincome = 0;
     let tmpexpense = 0;
@@ -191,24 +172,38 @@ const History = (props) => {
   useEffect(() => {
     fetchRecord();
     calculateAmount();
-    // setData([]);
 
     const fetchData = async () => {
-      await props.history.map((record, key) => {
-        setData(...data, [
-          {
-            name: props.history[key].name,
-            y: parseFloat(props.history[key].amount),
-          },
-        ]);
-      });
+      if (alignment === "expense") {
+        setData([]);
+        await props.history.map((record, key) => {
+          if (record.type === "expense") {
+            setData((data) => [
+              ...data,
+              {
+                name: record.name,
+                y: parseFloat(record.amount),
+              },
+            ]);
+          }
+        });
+      } else if (alignment === "income") {
+        setData([]);
+        await props.history.map((record, key) => {
+          if (record.type === "income") {
+            setData((data) => [
+              ...data,
+              {
+                name: record.name,
+                y: parseFloat(record.amount),
+              },
+            ]);
+          }
+        });
+      }
     };
     fetchData().catch(console.error);
-  }, [props.history.length, date]);
-
-  // console.log(data.length, "data length");
-  console.log(data, "data");
-  console.log(props.history.length, "firebase length");
+  }, [props.history.length, date, alignment]);
 
   return (
     <div className="history-page">
@@ -249,9 +244,9 @@ const History = (props) => {
           </ToggleButton>
         </ToggleButtonGroup>
 
-        {data.length === props.history.length && (
-          <HighchartsReact highcharts={Highcharts} options={options} />
-        )}
+        {/* {data.length === props.history.length && ( */}
+        <HighchartsReact highcharts={Highcharts} options={options} />
+        {/* )} */}
 
         <h3 className="history__page__history">History</h3>
 
