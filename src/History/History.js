@@ -18,28 +18,29 @@ const History = (props) => {
   const [balance, setBalance] = useState(0);
   const [expense, setExpense] = useState(0);
   const [income, setIncome] = useState(0);
-  const [showChart, setShowChart] = useState(0);
+  const [data, setData] = useState([]);
   const [alignment, setAlignment] = useState("expense");
 
   let tmpDate = Moment(date).format("MMMM YYYY");
-  let data = [
-    {
-      name: "Chrome",
-      y: 61.04,
-    },
-    {
-      name: "Safari",
-      y: 9.47,
-    },
-    {
-      name: "Edge",
-      y: 9.32,
-    },
-    {
-      name: "Firefox",
-      y: 8.15,
-    },
-  ];
+
+  // var data = [
+  // {
+  //   name: "Chrome",
+  //   y: 61.04,
+  // },
+  // {
+  //   name: "Safari",
+  //   y: 9.47,
+  // },
+  // {
+  //   name: "Edge",
+  //   y: 9.32,
+  // },
+  // {
+  //   name: "Firefox",
+  //   y: 8.15,
+  // },
+  // ];
 
   const calculateAmount = async () => {
     let tmpincome = 0;
@@ -190,20 +191,24 @@ const History = (props) => {
   useEffect(() => {
     fetchRecord();
     calculateAmount();
-    setShowChart(false);
+    // setData([]);
 
     const fetchData = async () => {
-      await props.history.forEach((record, key) => {
-        data.push({
-          name: props.history[key].name,
-          y: parseFloat(props.history[key].amount),
-        });
+      await props.history.map((record, key) => {
+        setData(...data, [
+          {
+            name: props.history[key].name,
+            y: parseFloat(props.history[key].amount),
+          },
+        ]);
       });
-      console.log(data);
-      setShowChart(true);
     };
     fetchData().catch(console.error);
   }, [props.history.length, date]);
+
+  // console.log(data.length, "data length");
+  console.log(data, "data");
+  console.log(props.history.length, "firebase length");
 
   return (
     <div className="history-page">
@@ -244,7 +249,7 @@ const History = (props) => {
           </ToggleButton>
         </ToggleButtonGroup>
 
-        {showChart && (
+        {data.length === props.history.length && (
           <HighchartsReact highcharts={Highcharts} options={options} />
         )}
 
