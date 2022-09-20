@@ -19,6 +19,14 @@ const History = (props) => {
   const [balance, setBalance] = useState(0);
   const [expense, setExpense] = useState(0);
   const [income, setIncome] = useState(0);
+  const [food, setFood] = useState(0);
+  const [transportation, setTransportation] = useState(0);
+  const [entertainment, setEntertainment] = useState(0);
+  const [household, setHousehold] = useState(0);
+  const [others, setOthers] = useState(0);
+  const [salary, setSalary] = useState(0);
+  const [incomeOthers, setIncomeOthers] = useState(0);
+  const [chart, setChart] = useState([]);
   const [data, setData] = useState([]);
   const [alignment, setAlignment] = useState("expense");
 
@@ -27,12 +35,35 @@ const History = (props) => {
   const calculateAmount = async () => {
     let tmpincome = 0;
     let tmpexpense = 0;
+    setFood(0);
+    setTransportation(0);
+    setEntertainment(0);
+    setHousehold(0);
+    setOthers(0);
+    setSalary(0);
+    setIncomeOthers(0);
 
     await props.history.forEach((record) => {
       if (record.type === "expense") {
         tmpexpense += parseFloat(record.amount);
+        if (record.category === "Food") {
+          setFood(food + parseFloat(record.amount));
+        } else if (record.category === "Transportation") {
+          setTransportation(transportation + parseFloat(record.amount));
+        } else if (record.category === "Entertainment") {
+          setEntertainment(entertainment + parseFloat(record.amount));
+        } else if (record.category === "Household") {
+          setHousehold(household + parseFloat(record.amount));
+        } else if (record.category === "Others") {
+          setOthers(others + parseFloat(record.amount));
+        }
       } else if (record.type === "income") {
         tmpincome += parseFloat(record.amount);
+        if (record.category === "Salary") {
+          setFood(salary + parseFloat(record.amount));
+        } else if (record.category === "Others") {
+          setTransportation(incomeOthers + parseFloat(record.amount));
+        }
       }
     });
 
@@ -40,6 +71,8 @@ const History = (props) => {
     setExpense(tmpexpense);
     setIncome(tmpincome);
   };
+
+  console.log(transportation);
 
   const fetchRecord = async () => {
     const payload = {
@@ -54,7 +87,7 @@ const History = (props) => {
     setAlignment(newAlignment);
   };
 
-  const options = {
+  const incomeoptions = {
     chart: {
       type: "pie",
     },
@@ -90,7 +123,28 @@ const History = (props) => {
       {
         name: alignment,
         colorByPoint: true,
-        data: data,
+        data: [
+          {
+            name: "Food",
+            y: food,
+          },
+          {
+            name: "Transportation",
+            y: transportation,
+          },
+          {
+            name: "Entertainment",
+            y: entertainment,
+          },
+          {
+            name: "Household",
+            y: household,
+          },
+          {
+            name: "Others",
+            y: others,
+          },
+        ],
       },
     ],
     // drilldown: {
@@ -165,6 +219,56 @@ const History = (props) => {
     //     },
     //   ],
     // },
+  };
+
+  const expenseoptions = {
+    chart: {
+      type: "pie",
+    },
+    title: {
+      text: "Pie Chart",
+    },
+
+    accessibility: {
+      announceNewData: {
+        enabled: true,
+      },
+      point: {
+        valueSuffix: "%",
+      },
+    },
+
+    plotOptions: {
+      series: {
+        dataLabels: {
+          enabled: true,
+          format: "{point.name}: RM{point.y:.2f}",
+        },
+      },
+    },
+
+    tooltip: {
+      headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+      pointFormat:
+        '<span style="color:{point.color}">{point.name}</span>: <b>RM{point.y:.2f}</b> of total<br/>',
+    },
+
+    series: [
+      {
+        name: alignment,
+        colorByPoint: true,
+        data: [
+          {
+            name: "Salary",
+            y: salary,
+          },
+          {
+            name: "Others",
+            y: incomeOthers,
+          },
+        ],
+      },
+    ],
   };
 
   useEffect(() => {
@@ -243,7 +347,10 @@ const History = (props) => {
         </ToggleButtonGroup>
 
         {data.length > 0 && (
-          <HighchartsReact highcharts={Highcharts} options={options} />
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={alignment === "expense" ? incomeoptions : expenseoptions}
+          />
         )}
 
         <h3 className="history__page__history">History</h3>

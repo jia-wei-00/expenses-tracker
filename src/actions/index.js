@@ -27,6 +27,7 @@ export function postRecord(payload) {
         type: payload.type,
         name: payload.name,
         amount: payload.amount,
+        category: payload.category,
         timestamp: payload.timestamp,
       });
   };

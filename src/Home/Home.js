@@ -80,16 +80,20 @@ const Home = (props) => {
       date: date,
       name: name,
       amount: amount,
+      category: category,
       timestamp: timestamp,
     };
 
     props.postRecord(payload);
+
     reset(e);
   };
 
   const reset = () => {
     setName("");
     setAmount("");
+    setCategory("");
+    setAddTransaction(false);
   };
 
   const updateRecord = () => {
@@ -342,6 +346,7 @@ const Home = (props) => {
                     required
                     style={{ marginBottom: "20px" }}
                   />
+
                   <FormControl
                     variant="standard"
                     style={{ marginBottom: "20px" }}
@@ -349,18 +354,36 @@ const Home = (props) => {
                     <InputLabel id="demo-simple-select-standard-label">
                       Type *
                     </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-standard-label"
-                      id="demo-simple-select-standard"
-                      value={category}
-                      label="Age"
-                      onChange={(e) => setCategory(e.target.value)}
-                      required
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
+                    {type === "expense" ? (
+                      <Select
+                        labelId="demo-simple-select-standard-label"
+                        id="demo-simple-select-standard"
+                        value={category}
+                        label="Age"
+                        onChange={(e) => setCategory(e.target.value)}
+                        required
+                      >
+                        <MenuItem value="Food">Food</MenuItem>
+                        <MenuItem value="Transportation">
+                          Transportation
+                        </MenuItem>
+                        <MenuItem value="Entertainment">Entertainment</MenuItem>
+                        <MenuItem value="Household">Household</MenuItem>
+                        <MenuItem value="Others">Others</MenuItem>
+                      </Select>
+                    ) : (
+                      <Select
+                        labelId="demo-simple-select-standard-label"
+                        id="demo-simple-select-standard"
+                        value={category}
+                        label="Age"
+                        onChange={(e) => setCategory(e.target.value)}
+                        required
+                      >
+                        <MenuItem value="Salary">Salary</MenuItem>
+                        <MenuItem value="Others">Others</MenuItem>
+                      </Select>
+                    )}
                   </FormControl>
 
                   <TextField
