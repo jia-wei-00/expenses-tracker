@@ -10,9 +10,9 @@
 }
 
 .home-container {
-  height: 67vh;
+  height: 410px;
   overflow-y: auto;
-  margin-bottom: 100px;
+  /* margin-bottom: 100px; */
 }
 
 @media only screen and (max-width: 425px) {

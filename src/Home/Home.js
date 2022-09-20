@@ -21,6 +21,7 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Moment from "moment";
+import TextField from "@mui/material/TextField";
 
 const style = {
   position: "absolute",
@@ -325,51 +326,63 @@ const Home = (props) => {
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <form onSubmit={(event) => handlePostRecord(event)}>
-                <p className="t__title">Name</p>
-                <input
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={
-                    type === "expense"
-                      ? "Enter expense name..."
-                      : "Enter income name..."
-                  }
-                  type="text"
-                  required
-                />
-                <InputLabel id="demo-simple-select-standard-label">
-                  Age
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-standard-label"
-                  id="demo-simple-select-standard"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  label="Age"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-                <p className="t__title">Amount</p>
-                <input
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder={
-                    type === "expense"
-                      ? "Enter expense amount..."
-                      : "Enter income amount..."
-                  }
-                  type="number"
-                  required
-                />
+                <FormControl fullWidth>
+                  <TextField
+                    id="standard-password-input"
+                    label="Name"
+                    variant="standard"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={
+                      type === "expense"
+                        ? "Enter expense name..."
+                        : "Enter income name..."
+                    }
+                    type="text"
+                    required
+                    style={{ marginBottom: "20px" }}
+                  />
+                  <FormControl
+                    variant="standard"
+                    style={{ marginBottom: "20px" }}
+                  >
+                    <InputLabel id="demo-simple-select-standard-label">
+                      Type *
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={category}
+                      label="Age"
+                      onChange={(e) => setCategory(e.target.value)}
+                      required
+                    >
+                      <MenuItem value={10}>Ten</MenuItem>
+                      <MenuItem value={20}>Twenty</MenuItem>
+                      <MenuItem value={30}>Thirty</MenuItem>
+                    </Select>
+                  </FormControl>
 
-                <button type="submit" className="add">
-                  Add Transaction
-                </button>
+                  <TextField
+                    id="standard-password-input"
+                    label="Amount"
+                    variant="standard"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder={
+                      type === "expense"
+                        ? "Enter expense amount..."
+                        : "Enter income amount..."
+                    }
+                    type="number"
+                    style={{ marginBottom: "20px" }}
+                    required
+                  />
+
+                  <Button variant="outlined" type="submit">
+                    Add Transaction
+                  </Button>
+                </FormControl>
               </form>
             </Typography>
           </Box>
