@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import "./Home.css";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
 import { connect } from "react-redux";
 import {
   postRecord,
@@ -31,12 +35,14 @@ const style = {
 };
 
 const Home = (props) => {
-  const [type, setType] = useState("expense");
+  const [type, setType] = useState("");
+  const [addTransaction, setAddTransaction] = useState(false);
   const [name, setName] = useState("");
   const [amount, setAmount] = useState();
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const [balance, setBalance] = useState(0);
+  const [category, setCategory] = useState("");
   const [modalName, setModalName] = useState("");
   const [modalAmount, setModalAmount] = useState("");
   const [modalId, setModalId] = useState("");
@@ -192,47 +198,22 @@ const Home = (props) => {
         <div className="transaction">
           <button
             className={type === "expense" ? "active" : undefined}
-            onClick={() => setType("expense")}
+            onClick={() => {
+              setType("expense");
+              setAddTransaction(true);
+            }}
           >
             Expense
           </button>
           <button
             className={type === "income" ? "active" : undefined}
-            onClick={() => setType("income")}
+            onClick={() => {
+              setType("income");
+              setAddTransaction(true);
+            }}
           >
             Income
           </button>
-
-          <form onSubmit={(event) => handlePostRecord(event)}>
-            <p className="t__title">Name</p>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder={
-                type === "expense"
-                  ? "Enter expense name..."
-                  : "Enter income name..."
-              }
-              type="text"
-              required
-            />
-            <p className="t__title">Amount</p>
-            <input
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder={
-                type === "expense"
-                  ? "Enter expense amount..."
-                  : "Enter income amount..."
-              }
-              type="number"
-              required
-            />
-
-            <button type="submit" className="add">
-              Add Transaction
-            </button>
-          </form>
         </div>
       </div>
 
@@ -319,6 +300,82 @@ const Home = (props) => {
         </Fade>
       </Modal>
       {/* End Popup */}
+
+      {/* Add Transaction Moadal */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={addTransaction}
+        onClose={() => setAddTransaction(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={addTransaction}>
+          <Box sx={style}>
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              style={{ textTransform: "capitalize" }}
+            >
+              Add {type} Record
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <form onSubmit={(event) => handlePostRecord(event)}>
+                <p className="t__title">Name</p>
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={
+                    type === "expense"
+                      ? "Enter expense name..."
+                      : "Enter income name..."
+                  }
+                  type="text"
+                  required
+                />
+                <InputLabel id="demo-simple-select-standard-label">
+                  Age
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  label="Age"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value={10}>Ten</MenuItem>
+                  <MenuItem value={20}>Twenty</MenuItem>
+                  <MenuItem value={30}>Thirty</MenuItem>
+                </Select>
+                <p className="t__title">Amount</p>
+                <input
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder={
+                    type === "expense"
+                      ? "Enter expense amount..."
+                      : "Enter income amount..."
+                  }
+                  type="number"
+                  required
+                />
+
+                <button type="submit" className="add">
+                  Add Transaction
+                </button>
+              </form>
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
+      {/* End Add Transaction Modal */}
     </div>
   );
 };
