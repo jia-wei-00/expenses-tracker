@@ -138,22 +138,27 @@ const History = (props) => {
           {
             name: "Food",
             y: food,
+            drilldown: "Food",
           },
           {
             name: "Transportation",
             y: transportation,
+            drilldown: "Transportation",
           },
           {
             name: "Entertainment",
             y: entertainment,
+            drilldown: "Entertainment",
           },
           {
             name: "Household",
             y: household,
+            drilldown: "Household",
           },
           {
             name: "Others",
             y: others,
+            drilldown: "Others",
           },
         ],
       },
@@ -229,10 +234,12 @@ const History = (props) => {
           {
             name: "Salary",
             y: salary,
+            drilldown: "Salary",
           },
           {
             name: "Others",
             y: incomeOthers,
+            drilldown: "Others",
           },
         ],
       },
@@ -253,8 +260,6 @@ const History = (props) => {
     },
   };
 
-  console.log(entertainmentChart);
-
   useEffect(() => {
     fetchRecord();
     calculateAmount();
@@ -271,27 +276,27 @@ const History = (props) => {
             if (record.category === "Food") {
               setFoodChart((foodChart) => [
                 ...foodChart,
-                [record.name, record.amount],
+                [record.name, parseFloat(record.amount)],
               ]);
             } else if (record.category === "Transportation") {
               setTransportChart((transportChart) => [
                 ...transportChart,
-                [record.name, record.amount],
+                [record.name, parseFloat(record.amount)],
               ]);
             } else if (record.category === "Entertainment") {
               setEntertainmentChart((entertainmentChart) => [
                 ...entertainmentChart,
-                [record.name, record.amount],
+                [record.name, parseFloat(record.amount)],
               ]);
             } else if (record.category === "Household") {
               setHouseholdChart((householdChart) => [
                 ...householdChart,
-                [record.name, record.amount],
+                [record.name, parseFloat(record.amount)],
               ]);
             } else if (record.category === "Others") {
               setOthersChart((othersChart) => [
                 ...othersChart,
-                [record.name, record.amount],
+                [record.name, parseFloat(record.amount)],
               ]);
             }
           }
@@ -304,12 +309,12 @@ const History = (props) => {
             if (record.category === "Salary") {
               setSalaryChart((salaryChart) => [
                 ...salaryChart,
-                [record.name, record.amount],
+                [record.name, parseFloat(record.amount)],
               ]);
             } else if (record.category === "Others") {
               setIncomeOthersChart((incomeOthersChart) => [
                 ...incomeOthersChart,
-                [record.name, record.amount],
+                [record.name, parseFloat(record.amount)],
               ]);
             }
           }
