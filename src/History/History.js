@@ -26,8 +26,14 @@ const History = (props) => {
   const [others, setOthers] = useState(0);
   const [salary, setSalary] = useState(0);
   const [incomeOthers, setIncomeOthers] = useState(0);
-  const [chart, setChart] = useState([]);
-  const [data, setData] = useState([]);
+  const [foodChart, setFoodChart] = useState([]);
+  const [transportChart, setTransportChart] = useState([]);
+  const [entertainmentChart, setEntertainmentChart] = useState([]);
+  const [householdChart, setHouseholdChart] = useState([]);
+  const [othersChart, setOthersChart] = useState([]);
+  const [salaryChart, setSalaryChart] = useState([]);
+  const [incomeOthersChart, setIncomeOthersChart] = useState([]);
+  // const [data, setData] = useState([]);
   const [alignment, setAlignment] = useState("expense");
 
   let tmpDate = Moment(date).format("MMMM YYYY");
@@ -35,44 +41,49 @@ const History = (props) => {
   const calculateAmount = async () => {
     let tmpincome = 0;
     let tmpexpense = 0;
-    setFood(0);
-    setTransportation(0);
-    setEntertainment(0);
-    setHousehold(0);
-    setOthers(0);
-    setSalary(0);
-    setIncomeOthers(0);
+    let tmpfood = 0;
+    let tmptransport = 0;
+    let tmpentertain = 0;
+    let tmphousehold = 0;
+    let tmpothers = 0;
+    let tmpsalary = 0;
+    let tmpincomeothers = 0;
 
     await props.history.forEach((record) => {
       if (record.type === "expense") {
         tmpexpense += parseFloat(record.amount);
         if (record.category === "Food") {
-          setFood(food + parseFloat(record.amount));
+          tmpfood += parseFloat(record.amount);
         } else if (record.category === "Transportation") {
-          setTransportation(transportation + parseFloat(record.amount));
+          tmptransport += parseFloat(record.amount);
         } else if (record.category === "Entertainment") {
-          setEntertainment(entertainment + parseFloat(record.amount));
+          tmpentertain += parseFloat(record.amount);
         } else if (record.category === "Household") {
-          setHousehold(household + parseFloat(record.amount));
+          tmphousehold += parseFloat(record.amount);
         } else if (record.category === "Others") {
-          setOthers(others + parseFloat(record.amount));
+          tmpothers += parseFloat(record.amount);
         }
       } else if (record.type === "income") {
         tmpincome += parseFloat(record.amount);
         if (record.category === "Salary") {
-          setFood(salary + parseFloat(record.amount));
+          tmpsalary += parseFloat(record.amount);
         } else if (record.category === "Others") {
-          setTransportation(incomeOthers + parseFloat(record.amount));
+          tmpincomeothers += parseFloat(record.amount);
         }
       }
     });
 
+    setFood(tmpfood);
+    setTransportation(tmptransport);
+    setEntertainment(tmpentertain);
+    setHousehold(tmphousehold);
+    setOthers(tmpothers);
+    setSalary(tmpsalary);
+    setIncomeOthers(tmpincomeothers);
     setBalance(tmpincome - tmpexpense);
     setExpense(tmpexpense);
     setIncome(tmpincome);
   };
-
-  console.log(transportation);
 
   const fetchRecord = async () => {
     const payload = {
@@ -87,7 +98,7 @@ const History = (props) => {
     setAlignment(newAlignment);
   };
 
-  const incomeoptions = {
+  const expenseoptions = {
     chart: {
       type: "pie",
     },
@@ -147,81 +158,38 @@ const History = (props) => {
         ],
       },
     ],
-    // drilldown: {
-    //   series: [
-    //     {
-    //       name: "Chrome",
-    //       id: "Chrome",
-    //       data: [
-    //         ["v97.0", 36.89],
-    //         ["v96.0", 18.16],
-    //         ["v95.0", 0.54],
-    //         ["v94.0", 0.7],
-    //         ["v93.0", 0.8],
-    //         ["v92.0", 0.41],
-    //         ["v91.0", 0.31],
-    //         ["v90.0", 0.13],
-    //         ["v89.0", 0.14],
-    //         ["v88.0", 0.1],
-    //         ["v87.0", 0.35],
-    //         ["v86.0", 0.17],
-    //         ["v85.0", 0.18],
-    //         ["v84.0", 0.17],
-    //         ["v83.0", 0.21],
-    //         ["v81.0", 0.1],
-    //         ["v80.0", 0.16],
-    //         ["v79.0", 0.43],
-    //         ["v78.0", 0.11],
-    //         ["v76.0", 0.16],
-    //         ["v75.0", 0.15],
-    //         ["v72.0", 0.14],
-    //         ["v70.0", 0.11],
-    //         ["v69.0", 0.13],
-    //         ["v56.0", 0.12],
-    //         ["v49.0", 0.17],
-    //       ],
-    //     },
-    //     {
-    //       name: "Safari",
-    //       id: "Safari",
-    //       data: [
-    //         ["v15.3", 0.1],
-    //         ["v15.2", 2.01],
-    //         ["v15.1", 2.29],
-    //         ["v15.0", 0.49],
-    //         ["v14.1", 2.48],
-    //         ["v14.0", 0.64],
-    //         ["v13.1", 1.17],
-    //         ["v13.0", 0.13],
-    //         ["v12.1", 0.16],
-    //       ],
-    //     },
-    //     {
-    //       name: "Edge",
-    //       id: "Edge",
-    //       data: [
-    //         ["v97", 6.62],
-    //         ["v96", 2.55],
-    //         ["v95", 0.15],
-    //       ],
-    //     },
-    //     {
-    //       name: "Firefox",
-    //       id: "Firefox",
-    //       data: [
-    //         ["v96.0", 4.17],
-    //         ["v95.0", 3.33],
-    //         ["v94.0", 0.11],
-    //         ["v91.0", 0.23],
-    //         ["v78.0", 0.16],
-    //         ["v52.0", 0.15],
-    //       ],
-    //     },
-    //   ],
-    // },
+    drilldown: {
+      series: [
+        {
+          name: "Food",
+          id: "Food",
+          data: foodChart,
+        },
+        {
+          name: "Transportation",
+          id: "Transportation",
+          data: transportChart,
+        },
+        {
+          name: "Entertainment",
+          id: "Entertainment",
+          data: entertainmentChart,
+        },
+        {
+          name: "Household",
+          id: "Household",
+          data: householdChart,
+        },
+        {
+          name: "Others",
+          id: "Others",
+          data: othersChart,
+        },
+      ],
+    },
   };
 
-  const expenseoptions = {
+  const incomeoptions = {
     chart: {
       type: "pie",
     },
@@ -269,7 +237,23 @@ const History = (props) => {
         ],
       },
     ],
+    drilldown: {
+      series: [
+        {
+          name: "Salary",
+          id: "Salary",
+          data: salaryChart,
+        },
+        {
+          name: "Others",
+          id: "Others",
+          data: incomeOthersChart,
+        },
+      ],
+    },
   };
+
+  console.log(entertainmentChart);
 
   useEffect(() => {
     fetchRecord();
@@ -277,29 +261,57 @@ const History = (props) => {
 
     const fetchData = async () => {
       if (alignment === "expense") {
-        setData([]);
+        setFoodChart([]);
+        setTransportChart([]);
+        setEntertainmentChart([]);
+        setHouseholdChart([]);
+        setOthersChart([]);
         await props.history.map((record, key) => {
           if (record.type === "expense") {
-            setData((data) => [
-              ...data,
-              {
-                name: record.name,
-                y: parseFloat(record.amount),
-              },
-            ]);
+            if (record.category === "Food") {
+              setFoodChart((foodChart) => [
+                ...foodChart,
+                [record.name, record.amount],
+              ]);
+            } else if (record.category === "Transportation") {
+              setTransportChart((transportChart) => [
+                ...transportChart,
+                [record.name, record.amount],
+              ]);
+            } else if (record.category === "Entertainment") {
+              setEntertainmentChart((entertainmentChart) => [
+                ...entertainmentChart,
+                [record.name, record.amount],
+              ]);
+            } else if (record.category === "Household") {
+              setHouseholdChart((householdChart) => [
+                ...householdChart,
+                [record.name, record.amount],
+              ]);
+            } else if (record.category === "Others") {
+              setOthersChart((othersChart) => [
+                ...othersChart,
+                [record.name, record.amount],
+              ]);
+            }
           }
         });
       } else if (alignment === "income") {
-        setData([]);
+        setSalaryChart([]);
+        setIncomeOthersChart([]);
         await props.history.map((record, key) => {
           if (record.type === "income") {
-            setData((data) => [
-              ...data,
-              {
-                name: record.name,
-                y: parseFloat(record.amount),
-              },
-            ]);
+            if (record.category === "Salary") {
+              setSalaryChart((salaryChart) => [
+                ...salaryChart,
+                [record.name, record.amount],
+              ]);
+            } else if (record.category === "Others") {
+              setIncomeOthersChart((incomeOthersChart) => [
+                ...incomeOthersChart,
+                [record.name, record.amount],
+              ]);
+            }
           }
         });
       }
@@ -346,12 +358,12 @@ const History = (props) => {
           </ToggleButton>
         </ToggleButtonGroup>
 
-        {data.length > 0 && (
-          <HighchartsReact
-            highcharts={Highcharts}
-            options={alignment === "expense" ? incomeoptions : expenseoptions}
-          />
-        )}
+        {/* {data.length > 0 && ( */}
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={alignment === "expense" ? expenseoptions : incomeoptions}
+        />
+        {/* )} */}
 
         <h3 className="history__page__history">History</h3>
 
