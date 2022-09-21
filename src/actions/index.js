@@ -128,6 +128,7 @@ export function updateRecordAPI(payload) {
       .update({
         name: payload.name,
         amount: payload.amount,
+        category: payload.category,
       });
     dispatch(getRecord(payload));
   };

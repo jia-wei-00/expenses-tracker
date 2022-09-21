@@ -33,7 +33,6 @@ const History = (props) => {
   const [othersChart, setOthersChart] = useState([]);
   const [salaryChart, setSalaryChart] = useState([]);
   const [incomeOthersChart, setIncomeOthersChart] = useState([]);
-  // const [data, setData] = useState([]);
   const [alignment, setAlignment] = useState("expense");
 
   let tmpDate = Moment(date).format("MMMM YYYY");

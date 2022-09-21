@@ -57,7 +57,7 @@ function Menu(props) {
               className={active === "todo" ? "list active" : "list"}
               onClick={() => setActive("todo")}
             >
-              <Link to="login">
+              <Link to="#">
                 <span className="icon">
                   <TopicIcon />
                 </span>

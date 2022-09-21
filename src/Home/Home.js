@@ -44,6 +44,8 @@ const Home = (props) => {
   const [expense, setExpense] = useState(0);
   const [balance, setBalance] = useState(0);
   const [category, setCategory] = useState("");
+  const [modalType, setModalType] = useState("");
+  const [editModalCategory, setEditModalCategory] = useState("");
   const [modalName, setModalName] = useState("");
   const [modalAmount, setModalAmount] = useState("");
   const [modalId, setModalId] = useState("");
@@ -59,7 +61,9 @@ const Home = (props) => {
     setModalName(props.name);
     setModalAmount(props.amount);
     setModalId(props.id);
+    setModalType(props.type);
     setOpenEditModal(true);
+    setEditModalCategory(props.category);
   };
 
   const handleOpenDelete = (props) => {
@@ -101,6 +105,7 @@ const Home = (props) => {
       user: props.user,
       name: modalName,
       amount: modalAmount,
+      category: editModalCategory,
       id: modalId,
       date: date,
     };
@@ -240,36 +245,80 @@ const Home = (props) => {
               Edit
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              <div>
-                <h5>Name</h5>
-                <input
-                  className="input-edit"
+              <FormControl fullWidth>
+                <TextField
+                  id="standard-password-input"
+                  label="Name"
+                  variant="standard"
                   value={modalName}
                   onChange={(e) => setModalName(e.target.value)}
+                  type="text"
+                  placeholder={"Enter Name"}
+                  required
+                  style={{ marginBottom: "20px" }}
                 />
-              </div>
-              <div>
-                <h5>Amount</h5>
-                <input
-                  className="input-edit"
+                <FormControl
+                  variant="standard"
+                  style={{ marginBottom: "20px" }}
+                >
+                  <InputLabel id="demo-simple-select-standard-label">
+                    Type *
+                  </InputLabel>
+                  {modalType === "expense" ? (
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={editModalCategory}
+                      label="Age"
+                      onChange={(e) => setEditModalCategory(e.target.value)}
+                      required
+                    >
+                      <MenuItem value="Food">Food</MenuItem>
+                      <MenuItem value="Transportation">Transportation</MenuItem>
+                      <MenuItem value="Entertainment">Entertainment</MenuItem>
+                      <MenuItem value="Household">Household</MenuItem>
+                      <MenuItem value="Others">Others</MenuItem>
+                    </Select>
+                  ) : (
+                    <Select
+                      labelId="demo-simple-select-standard-label"
+                      id="demo-simple-select-standard"
+                      value={editModalCategory}
+                      label="Age"
+                      onChange={(e) => setEditModalCategory(e.target.value)}
+                      required
+                    >
+                      <MenuItem value="Salary">Salary</MenuItem>
+                      <MenuItem value="Others">Others</MenuItem>
+                    </Select>
+                  )}
+                </FormControl>
+                <TextField
+                  id="standard-password-input"
+                  label="Amount"
+                  variant="standard"
                   value={modalAmount}
                   onChange={(e) => setModalAmount(e.target.value)}
+                  placeholder={"Enter Amount"}
+                  type="number"
+                  style={{ marginBottom: "20px" }}
+                  required
                 />
-              </div>
+              </FormControl>
+              <Button
+                variant="outlined"
+                style={{
+                  color: "white",
+                  border: "1px solid black",
+                  marginTop: "10px",
+                  background: "black",
+                  width: "100%",
+                }}
+                onClick={() => updateRecord()}
+              >
+                Update
+              </Button>
             </Typography>
-            <Button
-              variant="outlined"
-              style={{
-                color: "white",
-                border: "1px solid black",
-                marginTop: "10px",
-                background: "black",
-                width: "100%",
-              }}
-              onClick={() => updateRecord()}
-            >
-              Update
-            </Button>
           </Box>
         </Fade>
       </Modal>
