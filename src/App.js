@@ -4,6 +4,7 @@ import Home from "./Home/Home.js";
 import Login from "./Login/Login.js";
 import History from "./History/History.js";
 import LoginPage from "./Login/Login.js";
+import Memo from "./Memo/Memo.js";
 import { getUserAuth } from "./actions";
 import { connect } from "react-redux";
 import {
@@ -32,6 +33,7 @@ function App(props) {
             <Route path="*" redirectTo="/" element={<Home />} />
             <Route path="/history" element={<History />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/memo" element={<Memo />} />
           </Switch>
         </>
       )}
