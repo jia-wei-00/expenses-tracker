@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./History.css";
 import { getHistoryAPI } from "../actions";
+import { Dayjs } from "dayjs";
 import firebase from "firebase/compat/app";
 import { connect } from "react-redux";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { TextField } from "@mui/material";
 import Moment from "moment";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -14,7 +19,7 @@ require("highcharts/modules/exporting")(Highcharts);
 
 const History = (props) => {
   const [date, setDate] = useState(
-    Moment(firebase.firestore.Timestamp.now().toDate()).format("MMMM YYYY")
+    Moment(firebase.firestore.Timestamp.now().toDate()).format("YYYY-MM")
   );
   const [balance, setBalance] = useState(0);
   const [expense, setExpense] = useState(0);
@@ -259,6 +264,12 @@ const History = (props) => {
     },
   };
 
+  const styles = (theme) => ({
+    multilineColor: {
+      color: "white",
+    },
+  });
+
   useEffect(() => {
     fetchRecord();
     calculateAmount();
@@ -332,6 +343,25 @@ const History = (props) => {
           type="month"
           onChange={(e) => setDate(e.target.value)}
         />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <MobileDatePicker
+            views={["year", "month"]}
+            label="Year and Month"
+            minDate={new Date("2022-09-01")}
+            maxDate={new Date("2052-09-01")}
+            value={date}
+            onChange={(newValue: Dayjs) => {
+              setDate(newValue.format("MMMM YYYY"));
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                helperText={null}
+                style={{ color: "white" }}
+              />
+            )}
+          />
+        </LocalizationProvider>
       </form>
 
       <div className="history__container">
