@@ -138,8 +138,8 @@ const Home = (props) => {
     });
 
     setBalance(tmpincome - tmpexpense);
-    setExpense(tmpexpense);
-    setIncome(tmpincome);
+    setExpense(tmpexpense).toFixed(2);
+    setIncome(tmpincome).toFixed(2);
   };
 
   useEffect(() => {
@@ -353,7 +353,7 @@ const Home = (props) => {
           </Box>
         </Fade>
       </Modal>
-      {/* End Popup */}
+      {/* End Confirm Delete Popup */}
 
       {/* Add Transaction Moadal */}
       <Modal
@@ -393,7 +393,7 @@ const Home = (props) => {
                     }
                     type="text"
                     required
-                    style={{ marginBottom: "20px" }}
+                    style={{ marginBottom: "20px", color: "black" }}
                   />
 
                   <FormControl
@@ -451,7 +451,11 @@ const Home = (props) => {
                     required
                   />
 
-                  <Button variant="outlined" type="submit">
+                  <Button
+                    style={{ border: "1px solid black", color: "black" }}
+                    variant="outlined"
+                    type="submit"
+                  >
                     Add Transaction
                   </Button>
                 </FormControl>

@@ -259,12 +259,6 @@ const History = (props) => {
     },
   };
 
-  const styles = (theme) => ({
-    multilineColor: {
-      color: "white",
-    },
-  });
-
   useEffect(() => {
     fetchRecord();
     calculateAmount();

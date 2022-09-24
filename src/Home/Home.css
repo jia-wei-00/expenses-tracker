@@ -122,6 +122,7 @@
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.5s;
+  align-items: center;
 }
 
 .delete {

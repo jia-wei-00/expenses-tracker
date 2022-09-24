@@ -1,7 +1,13 @@
 import { auth } from "../firebase";
 import { getAuth } from "firebase/auth";
 import db from "../firebase";
-import { SET_USER, GET_RECORD, SET_LOADING, GET_HISTORY } from "./actionType";
+import {
+  SET_USER,
+  GET_RECORD,
+  SET_LOADING,
+  GET_HISTORY,
+  GET_TODO_RECORD,
+} from "./actionType";
 
 export const getRecord = (payload) => ({
   type: GET_RECORD,
@@ -13,10 +19,73 @@ export const getHistory = (payload) => ({
   payload: payload,
 });
 
+export const getTodoRecord = (payload) => ({
+  type: GET_TODO_RECORD,
+  payload: payload,
+});
+
 export const setUser = (payload) => ({
   type: SET_USER,
   payload: payload,
 });
+
+export function postTodoRecordAPI(payload) {
+  return (dispatch) => {
+    db.collection("expense__tracker")
+      .doc(payload.user)
+      .collection("todo__list")
+      .add({
+        text: payload.text,
+        timestamp: payload.timestamp,
+      });
+  };
+}
+
+export function getTodoRecordAPI(data) {
+  return (dispatch) => {
+    let payload;
+
+    db.collection("expense__tracker")
+      .doc(data.user)
+      .collection("todo__list")
+      .orderBy("timestamp", "asc")
+      .onSnapshot((snapshot) => {
+        payload = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          return { id, ...data };
+        });
+        dispatch(getTodoRecord(payload));
+      });
+  };
+}
+
+export function deleteTodoRecordAPI(payload) {
+  return async (dispatch) => {
+    await db
+      .collection("expense__tracker")
+      .doc(payload.user)
+      .collection("todo__list")
+      .doc(payload.id)
+      .delete();
+
+    dispatch(getRecord(payload));
+  };
+}
+
+export function updateTodoRecordAPI(payload) {
+  return async (dispatch) => {
+    await db
+      .collection("expense__tracker")
+      .doc(payload.user)
+      .collection("todo__list")
+      .doc(payload.id)
+      .update({
+        text: payload.text,
+      });
+    dispatch(getRecord(payload));
+  };
+}
 
 export function postRecord(payload) {
   return (dispatch) => {
