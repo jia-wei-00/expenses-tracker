@@ -138,8 +138,8 @@ const Home = (props) => {
     });
 
     setBalance(tmpincome - tmpexpense);
-    setExpense(tmpexpense).toFixed(2);
-    setIncome(tmpincome).toFixed(2);
+    setExpense(tmpexpense);
+    setIncome(tmpincome);
   };
 
   useEffect(() => {
@@ -161,15 +161,15 @@ const Home = (props) => {
       <h1 className="title">Expense Tracker</h1>
       <div className="home-container">
         <h3>Balance ({date})</h3>
-        <span>RM{balance}</span>
+        <span>RM{balance.toFixed(2)}</span>
         <div className="record__box">
           <div className="amount__income">
             <h4>INCOME</h4>
-            <p>RM{income}</p>
+            <p>RM{income.toFixed(2)}</p>
           </div>
           <div className="amount__expense">
             <h4>EXPENSE</h4>
-            <p>RM{expense}</p>
+            <p>RM{expense.toFixed(2)}</p>
           </div>
         </div>
         <h3 className="history__title">History</h3>

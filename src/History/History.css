@@ -66,19 +66,25 @@
 }
 
 .history__container {
-  max-height: 600px;
+  height: 70vh;
+  max-height: 650px;
   overflow-y: auto;
 }
 
 @media only screen and (max-width: 425px) {
   .history__container {
-    height: 54vh;
+    height: 60vh;
     overflow-y: auto;
   }
 }
 
 .history__container::-webkit-scrollbar {
-  width: 0px;
+  background-color: white;
+}
+
+.history__container::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: white;
 }
 
 .history__record::-webkit-scrollbar-track {
@@ -95,7 +101,7 @@
 
 .history__record::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: #555;
+  background-color: gray;
 }
 
 .highcharts-credits {

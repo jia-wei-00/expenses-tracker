@@ -1,5 +1,5 @@
 import { auth } from "../firebase";
-import { getAuth } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import db from "../firebase";
 import {
   SET_USER,
@@ -8,6 +8,8 @@ import {
   GET_HISTORY,
   GET_TODO_RECORD,
 } from "./actionType";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const getRecord = (payload) => ({
   type: GET_RECORD,
@@ -28,6 +30,22 @@ export const setUser = (payload) => ({
   type: SET_USER,
   payload: payload,
 });
+
+export function resetPassword(payload) {
+  return async (dispatch) => {
+    await toast.promise(
+      sendPasswordResetEmail(auth, payload).then((error) => {
+        console.log(error);
+      }),
+      {
+        pending: "Loading... Please wait",
+        success: "Success please check your email inbox and spam",
+        error: "Error occur 🤯",
+        theme: "dark",
+      }
+    );
+  };
+}
 
 export function postTodoRecordAPI(payload) {
   return (dispatch) => {
@@ -112,27 +130,68 @@ export function getUserAuth() {
   };
 }
 
+// export function signInAPI(data) {
+//   return async (dispatch) => {
+//     await toast.promise(
+//       auth
+//         .signInWithEmailAndPassword(data.username, data.password)
+//         .then((auth) => {
+//           dispatch(setUser(auth.user));
+//         }),
+//       // .catch((error) => console.log(error.message)),
+//       {
+//         pending: "Loading... Please wait",
+//         success: "Welcome",
+//         error: "Invalid username or password",
+//         theme: "dark",
+//       }
+//     );
+//   };
+// }
+
 export function signInAPI(data) {
-  return (dispatch) => {
+  return async (dispatch) => {
+    const id = toast.loading("Please wait...");
     auth
       .signInWithEmailAndPassword(data.username, data.password)
       .then((auth) => {
+        toast.update(id, {
+          render: "Welcome " + auth.user.email,
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
         dispatch(setUser(auth.user));
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+      });
   };
 }
 
 export function signOutAPI() {
-  return (dispatch) => {
-    auth
-      .signOut()
-      .then(() => {
-        dispatch(setUser(null));
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+  return async (dispatch) => {
+    await toast.promise(
+      auth
+        .signOut()
+        .then(() => {
+          dispatch(setUser(null));
+        })
+        .catch((error) => {
+          console.log(error.message);
+        }),
+      {
+        pending: "Loading... Please wait",
+        success: "Success Logout",
+        error: "Error occur 🤯",
+        theme: "dark",
+      }
+    );
   };
 }
 

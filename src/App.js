@@ -7,6 +7,7 @@ import LoginPage from "./Login/Login.js";
 import Memo from "./Memo/Memo.js";
 import { getUserAuth } from "./actions";
 import { connect } from "react-redux";
+import { ToastContainer } from "react-toastify";
 import {
   BrowserRouter as Router,
   Routes as Switch,
@@ -37,6 +38,7 @@ function App(props) {
           </Switch>
         </>
       )}
+      <ToastContainer theme="dark" />
     </Router>
   );
 }

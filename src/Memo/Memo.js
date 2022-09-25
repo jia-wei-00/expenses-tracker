@@ -10,7 +10,6 @@ import {
 import Button from "@mui/material/Button";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import EditIcon from "@mui/icons-material/Edit";
-import Moment from "moment";
 import firebase from "firebase/compat/app";
 import { styled } from "@mui/material/styles";
 import Backdrop from "@mui/material/Backdrop";
@@ -53,13 +52,13 @@ const modalStyle = {
 const Memo = (props) => {
   const [addModal, setAddModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [updateModal, setUpdateModal] = useState(false);
   const [addRecord, setAddRecord] = useState("");
   const [updateRecord, setUpdateRecord] = useState("");
   const [id, setId] = useState(0);
   const [key, setKey] = useState(0);
 
   let timestamp = firebase.firestore.Timestamp.now().toDate();
-  let date = Moment(timestamp).format("MMMM YYYY");
 
   const handlePost = (e) => {
     e.preventDefault();
@@ -75,7 +74,7 @@ const Memo = (props) => {
     setAddModal(false);
   };
 
-  const handleDeleteModal = (id, key) => {
+  const handleDeleteModal = (key, id) => {
     setId(id);
     setKey(key);
     setDeleteModal(true);
@@ -90,6 +89,27 @@ const Memo = (props) => {
     props.delete(payload);
 
     setDeleteModal(false);
+  };
+
+  const handleUpdateModal = (key, id, text) => {
+    setId(id);
+    setKey(key);
+    setUpdateRecord(text);
+    setUpdateModal(true);
+  };
+
+  const handleUpdate = (e) => {
+    e.preventDefault();
+
+    const payload = {
+      user: props.user,
+      id: id,
+      text: updateRecord,
+    };
+
+    props.update(payload);
+
+    setUpdateModal(false);
   };
 
   const reset = () => {
@@ -108,7 +128,6 @@ const Memo = (props) => {
     fetchRecord().catch(console.error);
   }, [props.record.length]);
 
-  console.log(props.record);
   return (
     <div className="memo">
       <h1 className="title">Todo</h1>
@@ -133,11 +152,14 @@ const Memo = (props) => {
 
                 <span
                   className="delete"
-                  onClick={() => handleDeleteModal(record.id, key)}
+                  onClick={() => handleDeleteModal(key, record.id)}
                 >
                   <DeleteForeverIcon />
                 </span>
-                <span className="edit" onClick={() => setId(record.id)}>
+                <span
+                  className="edit"
+                  onClick={() => handleUpdateModal(key, record.id, record.text)}
+                >
                   <EditIcon />
                 </span>
               </div>
@@ -163,30 +185,79 @@ const Memo = (props) => {
               Add Record
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              <FormControl fullWidth>
-                <TextField
-                  id="standard-multiline-static"
-                  label="Type text here"
-                  multiline
-                  rows={4}
-                  variant="standard"
-                  style={{ marginBottom: "30px" }}
-                  value={addRecord}
-                  onChange={(e) => setAddRecord(e.target.value)}
-                />
-                <ModalButton
-                  onClick={(e) => handlePost(e)}
-                  variant="contained"
-                  color="success"
-                >
-                  Add Record
-                </ModalButton>
-              </FormControl>
+              <form onSubmit={(e) => handlePost(e)}>
+                <FormControl fullWidth>
+                  <TextField
+                    id="standard-multiline-static"
+                    label="Type text here"
+                    multiline
+                    rows={4}
+                    variant="standard"
+                    style={{ marginBottom: "30px" }}
+                    value={addRecord}
+                    onChange={(e) => setAddRecord(e.target.value)}
+                    required
+                  />
+                  <ModalButton
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                  >
+                    Add Record
+                  </ModalButton>
+                </FormControl>
+              </form>
             </Typography>
           </Box>
         </Fade>
       </Modal>
       {/* End Add Record Modal */}
+
+      {/* Update Record Modal */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={updateModal}
+        onClose={() => setUpdateModal(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={updateModal}>
+          <Box sx={modalStyle}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              Update Record "No.{key + 1}"
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <form onSubmit={(e) => handleUpdate(e)}>
+                <FormControl fullWidth>
+                  <TextField
+                    id="standard-multiline-static"
+                    label="Type text here"
+                    multiline
+                    rows={4}
+                    variant="standard"
+                    style={{ marginBottom: "30px" }}
+                    value={updateRecord}
+                    onChange={(e) => setUpdateRecord(e.target.value)}
+                    required
+                  />
+                  <ModalButton
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                  >
+                    Update Record
+                  </ModalButton>
+                </FormControl>
+              </form>
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
+      {/* End Update Record Modal */}
 
       {/* Confirm Delete Popup */}
       <Modal

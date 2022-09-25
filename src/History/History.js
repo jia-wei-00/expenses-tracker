@@ -336,7 +336,7 @@ const History = (props) => {
 
       <div className="history__container">
         <h3>Balance ({tmpDate})</h3>
-        <span>RM{balance}</span>
+        <span>RM{balance.toFixed(2)}</span>
 
         <ToggleButtonGroup
           color="primary"
@@ -351,23 +351,22 @@ const History = (props) => {
             className="history__expense"
             value="expense"
           >
-            <h4>EXPENSE</h4>(<p>RM{expense}</p>)
+            <h4>EXPENSE</h4>(<p>RM{expense.toFixed(2)}</p>)
           </ToggleButton>
           <ToggleButton
             style={{ border: "1px solid rgba(255,255,255,0.1)" }}
             className="history__income"
             value="income"
           >
-            <h4>INCOME</h4>(<p>RM{income}</p>)
+            <h4>INCOME</h4>(<p>RM{income.toFixed(2)}</p>)
           </ToggleButton>
         </ToggleButtonGroup>
 
-        {/* {data.length > 0 && ( */}
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={alignment === "expense" ? expenseoptions : incomeoptions}
-        />
-        {/* )} */}
+        {alignment === "expense" ? (
+          <HighchartsReact highcharts={Highcharts} options={expenseoptions} />
+        ) : (
+          <HighchartsReact highcharts={Highcharts} options={incomeoptions} />
+        )}
 
         <h3 className="history__page__history">History</h3>
 
