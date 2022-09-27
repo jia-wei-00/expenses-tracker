@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Menu.css";
 import PaidIcon from "@mui/icons-material/Paid";
 import HistoryIcon from "@mui/icons-material/History";
 import TopicIcon from "@mui/icons-material/Topic";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { signOutAPI } from "../actions";
@@ -11,9 +11,22 @@ import { connect } from "react-redux";
 import useDetectKeyboardOpen from "use-detect-keyboard-open";
 
 function Menu(props) {
-  const [active, setActive] = useState("home");
+  let location = useLocation();
+  const [active, setActive] = useState(location.pathname);
 
   const isKeyboardOpen = useDetectKeyboardOpen();
+
+  useEffect(() => {
+    if (
+      location.pathname === "/home" ||
+      location.pathname === "/memo" ||
+      location.pathname === "/history"
+    ) {
+      setActive(location.pathname);
+    } else {
+      setActive("/home");
+    }
+  }, [location]);
 
   return (
     <>
@@ -30,8 +43,8 @@ function Menu(props) {
         <div className="navigation">
           <ul>
             <li
-              className={active === "home" ? "list active" : "list"}
-              onClick={() => setActive("home")}
+              className={active === "/home" ? "list active" : "list"}
+              // onClick={() => setActive("home")}
             >
               <Link to="/home">
                 <span className="icon">
@@ -42,8 +55,8 @@ function Menu(props) {
             </li>
 
             <li
-              className={active === "settings" ? "list active" : "list"}
-              onClick={() => setActive("settings")}
+              className={active === "/history" ? "list active" : "list"}
+              // onClick={() => setActive("settings")}
             >
               <Link to="/history">
                 <span className="icon">
@@ -54,8 +67,8 @@ function Menu(props) {
             </li>
 
             <li
-              className={active === "todo" ? "list active" : "list"}
-              onClick={() => setActive("todo")}
+              className={active === "/memo" ? "list active" : "list"}
+              // onClick={() => setActive("memo")}
             >
               <Link to="memo">
                 <span className="icon">
