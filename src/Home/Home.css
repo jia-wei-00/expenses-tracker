@@ -12,7 +12,13 @@
 .home-container {
   height: 76vh;
   overflow-y: auto;
-  /* margin-bottom: 100px; */
+}
+
+@media only screen and (max-width: 900px) {
+  .home-container {
+    height: 65vh;
+    overflow-y: auto;
+  }
 }
 
 @media only screen and (max-width: 425px) {
