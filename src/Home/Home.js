@@ -6,6 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import { styled } from "@mui/material/styles";
 import { connect } from "react-redux";
 import {
   postRecord,
@@ -35,6 +36,21 @@ const style = {
   p: 4,
 };
 
+const Input = styled(TextField)({
+  "& .MuiInput-input": {
+    color: "white !important",
+  },
+  "& label": {
+    color: "white !important",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "white",
+  },
+  "& .MuiInput-underline:before": {
+    borderBottomColor: "white",
+  },
+});
+
 const Home = (props) => {
   const [type, setType] = useState("");
   const [addTransaction, setAddTransaction] = useState(false);
@@ -51,6 +67,7 @@ const Home = (props) => {
   const [modalId, setModalId] = useState("");
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [search, setSearch] = useState("");
 
   const handleClose = () => {
     setOpenEditModal(false);
@@ -172,37 +189,56 @@ const Home = (props) => {
             <p>RM{expense.toFixed(2)}</p>
           </div>
         </div>
-        <h3 className="history__title">History</h3>
+        <div></div>
+        <h3 className="history__title">
+          History
+          <Input
+            id="standard-password-input"
+            variant="standard"
+            value={search}
+            onChange={(e) => setSearch(e.target.value.toLocaleLowerCase())}
+            type="text"
+            placeholder={"Search"}
+            required
+            style={{ color: "white" }}
+          />
+        </h3>
 
         <div className="history">
           {props.record.length > 0 &&
-            props.record.map((record, key) => (
-              <div
-                className={
-                  record.type === "expense"
-                    ? "record__expense"
-                    : "record__income"
-                }
-                key={key}
-              >
-                <div>
-                  <p>{record.name}</p>
-                  <p>
-                    {record.type === "expense" ? "-" : "+"}
-                    {record.amount}
-                  </p>
-                </div>
-                <span
-                  onClick={() => handleOpenDelete(record)}
-                  className="delete"
+            props.record
+              .filter(
+                (record) =>
+                  record.name.toLowerCase().includes(search) ||
+                  record.amount.toLowerCase().includes(search)
+              )
+              .map((record, key) => (
+                <div
+                  className={
+                    record.type === "expense"
+                      ? "record__expense"
+                      : "record__income"
+                  }
+                  key={key}
                 >
-                  <DeleteForeverIcon />
-                </span>
-                <span className="edit" onClick={() => handleOpenEdit(record)}>
-                  <EditIcon />
-                </span>
-              </div>
-            ))}
+                  <div>
+                    <p>{record.name}</p>
+                    <p>
+                      {record.type === "expense" ? "-" : "+"}
+                      {record.amount}
+                    </p>
+                  </div>
+                  <span
+                    onClick={() => handleOpenDelete(record)}
+                    className="delete"
+                  >
+                    <DeleteForeverIcon />
+                  </span>
+                  <span className="edit" onClick={() => handleOpenEdit(record)}>
+                    <EditIcon />
+                  </span>
+                </div>
+              ))}
         </div>
         <h3 className="history__title">Add Transaction</h3>
         <div className="transaction">
