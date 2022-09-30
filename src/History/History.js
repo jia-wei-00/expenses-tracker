@@ -3,6 +3,8 @@ import "./History.css";
 import { getHistoryAPI } from "../actions";
 import firebase from "firebase/compat/app";
 import { connect } from "react-redux";
+import { styled } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
 import Moment from "moment";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -11,6 +13,21 @@ import HighchartsReact from "highcharts-react-official";
 import drilldown from "highcharts-drilldown";
 drilldown(Highcharts);
 require("highcharts/modules/exporting")(Highcharts);
+
+const Input = styled(TextField)({
+  "& .MuiInput-input": {
+    color: "white !important",
+  },
+  "& label": {
+    color: "white !important",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "white",
+  },
+  "& .MuiInput-underline:before": {
+    borderBottomColor: "white",
+  },
+});
 
 const History = (props) => {
   const [date, setDate] = useState(
@@ -34,6 +51,7 @@ const History = (props) => {
   const [salaryChart, setSalaryChart] = useState([]);
   const [incomeOthersChart, setIncomeOthersChart] = useState([]);
   const [alignment, setAlignment] = useState("expense");
+  const [search, setSearch] = useState("");
 
   let tmpDate = Moment(date).format("MMMM YYYY");
 
@@ -368,28 +386,46 @@ const History = (props) => {
           <HighchartsReact highcharts={Highcharts} options={incomeoptions} />
         )}
 
-        <h3 className="history__page__history">History</h3>
+        <h3 className="history__title">
+          History
+          <Input
+            id="standard-password-input"
+            variant="standard"
+            value={search}
+            onChange={(e) => setSearch(e.target.value.toLocaleLowerCase())}
+            type="text"
+            placeholder={"Search"}
+            required
+            style={{ color: "white" }}
+          />
+        </h3>
 
         <div className="history__record">
           {props.history.length > 0 &&
-            props.history.map((record, key) => (
-              <div
-                className={
-                  record.type === "expense"
-                    ? "record__expense"
-                    : "record__income"
-                }
-                key={key}
-              >
-                <div>
-                  <p>{record.name}</p>
-                  <p>
-                    {record.type === "expense" ? "-" : "+"}
-                    {record.amount}
-                  </p>
+            props.history
+              .filter(
+                (record) =>
+                  record.name.toLowerCase().includes(search) ||
+                  record.amount.toLowerCase().includes(search)
+              )
+              .map((record, key) => (
+                <div
+                  className={
+                    record.type === "expense"
+                      ? "record__expense"
+                      : "record__income"
+                  }
+                  key={key}
+                >
+                  <div>
+                    <p>{record.name}</p>
+                    <p>
+                      {record.type === "expense" ? "-" : "+"}
+                      {record.amount}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
         </div>
       </div>
     </div>

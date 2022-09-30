@@ -202,7 +202,7 @@ export function getRecordAPI(data) {
     db.collection("expense__tracker")
       .doc(data.user)
       .collection(data.date)
-      .orderBy("timestamp", "asc")
+      .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         payload = snapshot.docs.map((doc) => {
           const data = doc.data();
@@ -221,7 +221,7 @@ export function getHistoryAPI(data) {
     db.collection("expense__tracker")
       .doc(data.user)
       .collection(data.date)
-      .orderBy("timestamp", "asc")
+      .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) => {
         payload = snapshot.docs.map((doc) => {
           const data = doc.data();
