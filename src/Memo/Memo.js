@@ -19,6 +19,15 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
+import Moment from "moment";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
 
 const ColorButton = styled(Button)(({ theme }) => ({
   color: "black",
@@ -49,6 +58,21 @@ const modalStyle = {
   p: 4,
 };
 
+const Input = styled(TextField)({
+  "& .MuiInput-input": {
+    color: "white !important",
+  },
+  "& label": {
+    color: "white !important",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "white",
+  },
+  "& .MuiInput-underline:before": {
+    borderBottomColor: "white",
+  },
+});
+
 const Memo = (props) => {
   const [addModal, setAddModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -57,6 +81,10 @@ const Memo = (props) => {
   const [updateRecord, setUpdateRecord] = useState("");
   const [id, setId] = useState(0);
   const [key, setKey] = useState(0);
+  const [search, setSearch] = useState("");
+  const [detailsModal, setDetailsModal] = useState(false);
+  const [detailsTime, setDetailsTime] = useState("");
+  const [detailsText, setDetailsText] = useState("");
 
   let timestamp = firebase.firestore.Timestamp.now().toDate();
 
@@ -139,31 +167,57 @@ const Memo = (props) => {
         Add Record
       </ColorButton>
       <div className="home-container">
-        <h3 className="history__title">Record</h3>
+        <h3 className="history__title">
+          Record
+          <Input
+            id="standard-password-input"
+            variant="standard"
+            value={search}
+            onChange={(e) => setSearch(e.target.value.toLowerCase())}
+            type="text"
+            placeholder={"Search"}
+            required
+            style={{ color: "white" }}
+          />
+        </h3>
 
         <div className="todo__record">
           {props.record.length > 0 &&
-            props.record.map((record, key) => (
-              <div className={"todo__list"} key={key}>
-                <p>{key + 1}</p>
-                <div>
-                  <p>{record.text}</p>
-                </div>
+            props.record
+              .filter((record) => record.text.toLowerCase().includes(search))
+              .map((record, key) => (
+                <div className="todo__list" key={key}>
+                  <p className="number">{key + 1}</p>
+                  <div
+                    onClick={() => {
+                      setId(record.id);
+                      setKey(key);
+                      setDetailsTime(
+                        Moment(record.timestamp.toDate()).format("LLLL")
+                      );
+                      setDetailsText(record.text);
+                      setDetailsModal(true);
+                    }}
+                  >
+                    <p>{record.text}</p>
+                  </div>
 
-                <span
-                  className="delete"
-                  onClick={() => handleDeleteModal(key, record.id)}
-                >
-                  <DeleteForeverIcon />
-                </span>
-                <span
-                  className="edit"
-                  onClick={() => handleUpdateModal(key, record.id, record.text)}
-                >
-                  <EditIcon />
-                </span>
-              </div>
-            ))}
+                  <span
+                    className="delete"
+                    onClick={() => handleDeleteModal(key, record.id)}
+                  >
+                    <DeleteForeverIcon />
+                  </span>
+                  <span
+                    className="edit"
+                    onClick={() =>
+                      handleUpdateModal(key, record.id, record.text)
+                    }
+                  >
+                    <EditIcon />
+                  </span>
+                </div>
+              ))}
         </div>
       </div>
 
@@ -289,6 +343,66 @@ const Memo = (props) => {
         </Fade>
       </Modal>
       {/* End Confirm Delete Popup */}
+
+      {/* Details Modal Popup */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={detailsModal}
+        onClose={() => setDetailsModal(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={detailsModal}>
+          <Box sx={modalStyle}>
+            <Typography id="transition-modal-title" variant="h6" component="h2">
+              <p className="number">{key + 1}</p>
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <TableContainer>
+                <TableBody>
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell
+                      align="center"
+                      colSpan={1}
+                      style={{ textAlign: "left" }}
+                    >
+                      Description
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      colSpan={4}
+                      style={{ textAlign: "left" }}
+                    >
+                      {detailsText}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell
+                      align="center"
+                      colSpan={3}
+                      style={{ textAlign: "left" }}
+                    >
+                      Date
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      colSpan={2}
+                      style={{ textAlign: "left" }}
+                    >
+                      {detailsTime}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </TableContainer>
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
+      {/* End Details Modal Popup */}
     </div>
   );
 };

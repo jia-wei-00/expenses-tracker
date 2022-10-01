@@ -20,11 +20,13 @@
   display: flex;
 }
 
-.todo__list > :first-child {
+.number {
   display: flex;
   justify-content: center;
   align-items: center;
   background: #42a5f5;
+  color: white;
+  font-size: 15px;
   border-radius: 50%;
   width: 25px;
   height: 25px;
