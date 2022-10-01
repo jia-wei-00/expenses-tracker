@@ -30,7 +30,7 @@
   border-radius: 50%;
   width: 25px;
   height: 25px;
-  margin: 0 5px 10px 0;
+  margin: 0 5px 0 0;
 }
 
 .todo__list > div {

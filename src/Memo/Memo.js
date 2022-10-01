@@ -21,12 +21,9 @@ import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 import Moment from "moment";
 import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 
 const ColorButton = styled(Button)(({ theme }) => ({
@@ -358,41 +355,45 @@ const Memo = (props) => {
       >
         <Fade in={detailsModal}>
           <Box sx={modalStyle}>
-            <Typography id="transition-modal-title" variant="h6" component="h2">
-              <p className="number">{key + 1}</p>
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <p className="number">{key + 1} </p>
+              <span>Details</span>
             </Typography>
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
-              <TableContainer>
+              <TableContainer component={Paper}>
                 <TableBody>
                   <TableRow hover role="checkbox" tabIndex={-1}>
                     <TableCell
-                      align="center"
                       colSpan={1}
-                      style={{ textAlign: "left" }}
+                      align="left"
+                      sx={{
+                        backgroundColor: "#212121",
+                        color: "white",
+                      }}
                     >
                       Description
                     </TableCell>
-                    <TableCell
-                      align="center"
-                      colSpan={4}
-                      style={{ textAlign: "left" }}
-                    >
+                    <TableCell colSpan={4} align="left">
                       {detailsText}
                     </TableCell>
                   </TableRow>
                   <TableRow hover role="checkbox" tabIndex={-1}>
                     <TableCell
-                      align="center"
-                      colSpan={3}
-                      style={{ textAlign: "left" }}
+                      colSpan={1}
+                      align="left"
+                      sx={{
+                        backgroundColor: "#212121",
+                        color: "white",
+                      }}
                     >
                       Date
                     </TableCell>
-                    <TableCell
-                      align="center"
-                      colSpan={2}
-                      style={{ textAlign: "left" }}
-                    >
+                    <TableCell colSpan={4} align="left">
                       {detailsTime}
                     </TableCell>
                   </TableRow>

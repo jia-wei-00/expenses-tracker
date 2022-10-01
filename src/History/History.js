@@ -11,6 +11,16 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import drilldown from "highcharts-drilldown";
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableRow from "@mui/material/TableRow";
 drilldown(Highcharts);
 require("highcharts/modules/exporting")(Highcharts);
 
@@ -28,6 +38,18 @@ const Input = styled(TextField)({
     borderBottomColor: "white",
   },
 });
+
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 const History = (props) => {
   const [date, setDate] = useState(
@@ -52,6 +74,12 @@ const History = (props) => {
   const [incomeOthersChart, setIncomeOthersChart] = useState([]);
   const [alignment, setAlignment] = useState("expense");
   const [search, setSearch] = useState("");
+  const [detailsModal, setDetailsModal] = useState(false);
+  const [detailsTime, setDetailsTime] = useState("");
+  const [detailsName, setDetailsName] = useState("");
+  const [detailsType, setDetailsType] = useState("");
+  const [detailsAmount, setDetailsAmount] = useState("");
+  const [detailsCategory, setDetailsCategory] = useState("");
 
   let tmpDate = Moment(date).format("MMMM YYYY");
 
@@ -417,7 +445,18 @@ const History = (props) => {
                   }
                   key={key}
                 >
-                  <div>
+                  <div
+                    onClick={() => {
+                      setDetailsName(record.name);
+                      setDetailsType(record.type);
+                      setDetailsCategory(record.category);
+                      setDetailsAmount(record.amount);
+                      setDetailsTime(
+                        Moment(record.timestamp.toDate()).format("LLLL")
+                      );
+                      setDetailsModal(true);
+                    }}
+                  >
                     <p>{record.name}</p>
                     <p>
                       {record.type === "expense" ? "-" : "+"}
@@ -428,6 +467,126 @@ const History = (props) => {
               ))}
         </div>
       </div>
+
+      {/* Details Modal Popup */}
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={detailsModal}
+        onClose={() => setDetailsModal(false)}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={detailsModal}>
+          <Box sx={modalStyle}>
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <span>Details</span>
+            </Typography>
+            <Typography id="transition-modal-description" sx={{ mt: 2 }}>
+              <TableContainer component={Paper}>
+                <TableBody>
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell
+                      colSpan={1}
+                      align="left"
+                      sx={{
+                        backgroundColor: "#212121",
+                        color: "white",
+                      }}
+                    >
+                      Name
+                    </TableCell>
+                    <TableCell
+                      colSpan={4}
+                      align="left"
+                      sx={{ textTransform: "Capitalize" }}
+                    >
+                      {detailsName}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell
+                      colSpan={1}
+                      align="left"
+                      sx={{
+                        backgroundColor: "#212121",
+                        color: "white",
+                      }}
+                    >
+                      Type
+                    </TableCell>
+                    <TableCell
+                      colSpan={4}
+                      align="left"
+                      sx={{ textTransform: "Capitalize" }}
+                    >
+                      {detailsType}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell
+                      colSpan={1}
+                      align="left"
+                      sx={{
+                        backgroundColor: "#212121",
+                        color: "white",
+                      }}
+                    >
+                      Category
+                    </TableCell>
+                    <TableCell
+                      colSpan={4}
+                      align="left"
+                      sx={{ textTransform: "Capitalize" }}
+                    >
+                      {detailsCategory}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell
+                      colSpan={1}
+                      align="left"
+                      sx={{
+                        backgroundColor: "#212121",
+                        color: "white",
+                      }}
+                    >
+                      Amount
+                    </TableCell>
+                    <TableCell colSpan={4} align="left">
+                      RM {detailsAmount}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow hover role="checkbox" tabIndex={-1}>
+                    <TableCell
+                      colSpan={1}
+                      align="left"
+                      sx={{
+                        backgroundColor: "#212121",
+                        color: "white",
+                      }}
+                    >
+                      Date
+                    </TableCell>
+                    <TableCell colSpan={4} align="left">
+                      {detailsTime}
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </TableContainer>
+            </Typography>
+          </Box>
+        </Fade>
+      </Modal>
+      {/* End Details Modal Popup */}
     </div>
   );
 };
