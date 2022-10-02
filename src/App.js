@@ -5,6 +5,7 @@ import Login from "./Login/Login.js";
 import History from "./History/History.js";
 import LoginPage from "./Login/Login.js";
 import Memo from "./Memo/Memo.js";
+import Register from "./Register/Register.js";
 import { getUserAuth } from "./actions";
 import { connect } from "react-redux";
 import { ToastContainer } from "react-toastify";
@@ -25,6 +26,7 @@ function App(props) {
         <>
           <Switch>
             <Route path="*" redirectTo="/" element={<Login />} />
+            <Route path="/register" element={<Register />} />
           </Switch>
         </>
       ) : (

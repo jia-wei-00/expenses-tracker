@@ -9,7 +9,7 @@
 .resetpassword {
   display: flex;
   width: 100%;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
 
 .resetpassword > p {
@@ -17,9 +17,15 @@
   margin: 10px;
   cursor: pointer;
   transition: 0.5s;
+  font-size: 12px;
 }
 
-.resetpassword > p:hover {
+.resetpassword > :nth-child(1):hover {
+  color: #29fd53;
+  text-decoration: underline;
+}
+
+.resetpassword > :nth-child(2):hover {
   color: red;
   text-decoration: underline;
 }

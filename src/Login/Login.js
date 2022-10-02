@@ -80,6 +80,10 @@ const Login = (props) => {
     navigate("/home");
   };
 
+  const register = () => {
+    navigate("/register");
+  };
+
   return (
     <>
       <LoginBox
@@ -116,8 +120,9 @@ const Login = (props) => {
             required
           />
         </div>
-        <div onClick={() => setOpenResetModal(true)} className="resetpassword">
-          <p>Forgot Password</p>
+        <div className="resetpassword">
+          <p onClick={() => register()}>Register</p>
+          <p onClick={() => setOpenResetModal(true)}>Forgot Password</p>
         </div>
 
         <CustomButton
