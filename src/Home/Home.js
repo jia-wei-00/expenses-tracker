@@ -282,6 +282,7 @@ const Home = (props) => {
               setType("expense");
               setAddTransaction(true);
             }}
+            disabled={props.loading}
           >
             Expense
           </button>
@@ -291,6 +292,7 @@ const Home = (props) => {
               setType("income");
               setAddTransaction(true);
             }}
+            disabled={props.loading}
           >
             Income
           </button>
@@ -385,6 +387,7 @@ const Home = (props) => {
                   width: "100%",
                 }}
                 onClick={() => updateRecord()}
+                disabled={props.loading}
               >
                 Update
               </Button>
@@ -416,6 +419,7 @@ const Home = (props) => {
                 onClick={() => handleDelete()}
                 variant="outlined"
                 color="error"
+                disabled={props.loading}
               >
                 DELETE
               </Button>
@@ -525,6 +529,7 @@ const Home = (props) => {
                     style={{ border: "1px solid black", color: "black" }}
                     variant="outlined"
                     type="submit"
+                    disabled={props.loading}
                   >
                     Add Transaction
                   </Button>
@@ -663,6 +668,7 @@ const mapStateToProps = (state) => {
   return {
     record: state.recordState.record,
     user: state.userState.user.email,
+    loading: state.loadingState.loading,
   };
 };
 

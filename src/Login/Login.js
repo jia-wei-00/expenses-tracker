@@ -117,10 +117,14 @@ const Login = (props) => {
           />
         </div>
         <div onClick={() => setOpenResetModal(true)} className="resetpassword">
-          Forgot Password
+          <p>Forgot Password</p>
         </div>
 
-        <CustomButton type="submit" variant="contained">
+        <CustomButton
+          type="submit"
+          variant="contained"
+          disabled={props.loading}
+        >
           Login
         </CustomButton>
       </LoginBox>
@@ -161,6 +165,7 @@ const Login = (props) => {
                   }}
                   variant="outlined"
                   color="error"
+                  disabled={props.loading}
                 >
                   RESET
                 </Button>
@@ -177,6 +182,7 @@ const Login = (props) => {
 const mapStateToProps = (state) => {
   return {
     user: state.userState.user,
+    loading: state.loadingState.loading,
   };
 };
 

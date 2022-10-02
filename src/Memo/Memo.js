@@ -160,6 +160,7 @@ const Memo = (props) => {
         onClick={() => setAddModal(true)}
         variant="contained"
         color="success"
+        disabled={props.loading}
       >
         Add Record
       </ColorButton>
@@ -253,6 +254,7 @@ const Memo = (props) => {
                     type="submit"
                     variant="contained"
                     color="success"
+                    disabled={props.loading}
                   >
                     Add Record
                   </ModalButton>
@@ -299,6 +301,7 @@ const Memo = (props) => {
                     type="submit"
                     variant="contained"
                     color="success"
+                    disabled={props.loading}
                   >
                     Update Record
                   </ModalButton>
@@ -332,6 +335,7 @@ const Memo = (props) => {
                 onClick={() => handleDelete()}
                 variant="outlined"
                 color="error"
+                disabled={props.loading}
               >
                 DELETE
               </Button>
@@ -412,6 +416,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.userState.user.email,
     record: state.recordState.todoRecord,
+    loading: state.loadingState.loading,
   };
 };
 

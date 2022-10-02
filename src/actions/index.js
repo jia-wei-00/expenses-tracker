@@ -11,6 +11,11 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+export const setLoading = (payload) => ({
+  type: SET_LOADING,
+  payload: payload,
+});
+
 export const getRecord = (payload) => ({
   type: GET_RECORD,
   payload: payload,
@@ -33,8 +38,10 @@ export const setUser = (payload) => ({
 
 export function resetPassword(payload) {
   return async (dispatch) => {
+    dispatch(setLoading(true));
     await toast.promise(
       sendPasswordResetEmail(auth, payload).then((error) => {
+        dispatch(setLoading(false));
         console.log(error);
       }),
       {
@@ -49,12 +56,32 @@ export function resetPassword(payload) {
 
 export function postTodoRecordAPI(payload) {
   return (dispatch) => {
+    const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
     db.collection("expense__tracker")
       .doc(payload.user)
       .collection("todo__list")
       .add({
         text: payload.text,
         timestamp: payload.timestamp,
+      })
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Add Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      })
+      .catch((error) => {
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
       });
   };
 }
@@ -80,19 +107,42 @@ export function getTodoRecordAPI(data) {
 
 export function deleteTodoRecordAPI(payload) {
   return async (dispatch) => {
+    const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
+
     await db
       .collection("expense__tracker")
       .doc(payload.user)
       .collection("todo__list")
       .doc(payload.id)
-      .delete();
-
-    dispatch(getRecord(payload));
+      .delete()
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Delete Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+        dispatch(getRecord(payload));
+      })
+      .catch((error) => {
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      });
   };
 }
 
 export function updateTodoRecordAPI(payload) {
   return async (dispatch) => {
+    const id = toast.loading("Please wait...");
+
+    dispatch(setLoading(true));
     await db
       .collection("expense__tracker")
       .doc(payload.user)
@@ -100,13 +150,34 @@ export function updateTodoRecordAPI(payload) {
       .doc(payload.id)
       .update({
         text: payload.text,
+      })
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Update Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+        dispatch(getRecord(payload));
+      })
+      .catch((error) => {
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
       });
-    dispatch(getRecord(payload));
   };
 }
 
 export function postRecord(payload) {
   return (dispatch) => {
+    const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
+
     db.collection("expense__tracker")
       .doc(payload.user)
       .collection(payload.date)
@@ -116,6 +187,24 @@ export function postRecord(payload) {
         amount: payload.amount,
         category: payload.category,
         timestamp: payload.timestamp,
+      })
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Add Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      })
+      .catch((error) => {
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
       });
   };
 }
@@ -130,28 +219,10 @@ export function getUserAuth() {
   };
 }
 
-// export function signInAPI(data) {
-//   return async (dispatch) => {
-//     await toast.promise(
-//       auth
-//         .signInWithEmailAndPassword(data.username, data.password)
-//         .then((auth) => {
-//           dispatch(setUser(auth.user));
-//         }),
-//       // .catch((error) => console.log(error.message)),
-//       {
-//         pending: "Loading... Please wait",
-//         success: "Welcome",
-//         error: "Invalid username or password",
-//         theme: "dark",
-//       }
-//     );
-//   };
-// }
-
 export function signInAPI(data) {
   return async (dispatch) => {
     const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
     auth
       .signInWithEmailAndPassword(data.username, data.password)
       .then((auth) => {
@@ -161,28 +232,35 @@ export function signInAPI(data) {
           isLoading: false,
           autoClose: 5000,
         });
+        dispatch(setLoading(false));
+
         dispatch(setUser(auth.user));
       })
       .catch((error) => {
+        dispatch(setLoading(false));
         toast.update(id, {
           render: error.message,
           type: "error",
           isLoading: false,
           autoClose: 5000,
         });
+        dispatch(setLoading(false));
       });
   };
 }
 
 export function signOutAPI() {
   return async (dispatch) => {
+    dispatch(setLoading(true));
     await toast.promise(
       auth
         .signOut()
         .then(() => {
           dispatch(setUser(null));
+          dispatch(setLoading(false));
         })
         .catch((error) => {
+          dispatch(setLoading(false));
           console.log(error.message);
         }),
       {
@@ -235,19 +313,42 @@ export function getHistoryAPI(data) {
 
 export function deleteRecordAPI(payload) {
   return async (dispatch) => {
+    const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
+
     await db
       .collection("expense__tracker")
       .doc(payload.user)
       .collection(payload.date)
       .doc(payload.id)
-      .delete();
-
-    dispatch(getRecord(payload));
+      .delete()
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Delete Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+        dispatch(getRecord(payload));
+      })
+      .catch((error) => {
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      });
   };
 }
 
 export function updateRecordAPI(payload) {
   return async (dispatch) => {
+    const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
+
     await db
       .collection("expense__tracker")
       .doc(payload.user)
@@ -257,7 +358,25 @@ export function updateRecordAPI(payload) {
         name: payload.name,
         amount: payload.amount,
         category: payload.category,
+      })
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Update Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+        dispatch(getRecord(payload));
+      })
+      .catch((error) => {
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
       });
-    dispatch(getRecord(payload));
   };
 }
