@@ -1,11 +1,11 @@
-.text {
+.text__desc {
   color: white;
   text-align: justify;
   width: 516px;
   padding: 10px;
 }
 
-.text > a {
+.text__desc > a {
   margin-left: 5px;
   color: whitesmoke;
 }

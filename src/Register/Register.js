@@ -123,12 +123,12 @@ const Register = (props) => {
         onSubmit={(e) => onSubmit(e)}
       >
         <h1 className="title">Register</h1>
-        <h4 className="text">
+        <h4 className="text__desc">
           Hi, my name is Leong Jia Wei. This is my personal project, if you wish
           to use it you may submit the form below or contact me to register an
           account.
         </h4>
-        <h4 className="text">
+        <h4 className="text__desc">
           Here is my portfolio
           <a href="https://jia-wei-portfolio.vercel.app/" target="_blank">
             Link
