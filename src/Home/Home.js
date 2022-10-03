@@ -454,22 +454,6 @@ const Home = (props) => {
             <Typography id="transition-modal-description" sx={{ mt: 2 }}>
               <form onSubmit={(event) => handlePostRecord(event)}>
                 <FormControl fullWidth>
-                  <TextField
-                    id="standard-password-input"
-                    label="Name"
-                    variant="standard"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder={
-                      type === "expense"
-                        ? "Enter expense name..."
-                        : "Enter income name..."
-                    }
-                    type="text"
-                    required
-                    style={{ marginBottom: "20px", color: "black" }}
-                  />
-
                   <FormControl
                     variant="standard"
                     style={{ marginBottom: "20px" }}
@@ -508,6 +492,21 @@ const Home = (props) => {
                       </Select>
                     )}
                   </FormControl>
+                  <TextField
+                    id="standard-password-input"
+                    label="Name"
+                    variant="standard"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={
+                      type === "expense"
+                        ? "Enter expense name..."
+                        : "Enter income name..."
+                    }
+                    type="text"
+                    required
+                    style={{ marginBottom: "20px", color: "black" }}
+                  />
 
                   <TextField
                     id="standard-password-input"
