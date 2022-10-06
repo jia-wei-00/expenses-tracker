@@ -1,7 +1,8 @@
 .text__desc {
   color: white;
   text-align: justify;
-  width: 516px;
+  width: 100%;
+  max-width: 500px;
   padding: 10px;
 }
 
