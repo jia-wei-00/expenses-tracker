@@ -6,6 +6,8 @@ import {
   getTodoRecordAPI,
   deleteTodoRecordAPI,
   updateTodoRecordAPI,
+  tmpPostAPI,
+  getTodoRecordArrayApi,
 } from "../actions";
 import Button from "@mui/material/Button";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -25,6 +27,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const ColorButton = styled(Button)(({ theme }) => ({
   color: "black",
@@ -82,13 +85,28 @@ const Memo = (props) => {
   const [detailsModal, setDetailsModal] = useState(false);
   const [detailsTime, setDetailsTime] = useState("");
   const [detailsText, setDetailsText] = useState("");
+  const [reduxRecord, updateReduxRecord] = useState(props.record);
 
+  function handleOnDragEnd(result) {
+    console.log(result, "dragEnd");
+    if (!result.destination) return;
+
+    const items = Array.from(reduxRecord);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    updateReduxRecord(items);
+  }
+
+  console.log(reduxRecord);
   let timestamp = firebase.firestore.Timestamp.now().toDate();
 
   const handlePost = (e) => {
     e.preventDefault();
 
     const payload = {
+      index: props.record.length,
+      record: props.record,
       user: props.user,
       text: addRecord,
       timestamp: timestamp,
@@ -148,10 +166,12 @@ const Memo = (props) => {
       };
 
       await props.fetch(payload);
+      await props.fetchRecordArray(payload);
+      updateReduxRecord(props.record);
     };
 
     fetchRecord().catch(console.error);
-  }, [props.record.length]);
+  }, [props.record.length, props.recordArray.length]);
 
   return (
     <div className="memo">
@@ -178,45 +198,76 @@ const Memo = (props) => {
             style={{ color: "white" }}
           />
         </h3>
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId="records">
+            {(provided) => (
+              <div
+                className="todo__record"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {props.recordArray.length > 0 &&
+                  reduxRecord
+                    .filter((record) =>
+                      record.text.toLowerCase().includes(search)
+                    )
+                    .map((record, index) => {
+                      return (
+                        <Draggable
+                          key={record.id}
+                          draggableId={record.id}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              className="todo__list"
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <p className="number">{index + 1}</p>
+                              <div
+                                onClick={() => {
+                                  setId(record.id);
+                                  setKey(index);
+                                  setDetailsTime(
+                                    Moment(record.timestamp.toDate()).format(
+                                      "LLLL"
+                                    )
+                                  );
+                                  setDetailsText(record.text);
+                                  setDetailsModal(true);
+                                }}
+                              >
+                                <p>{record.text}</p>
+                              </div>
 
-        <div className="todo__record">
-          {props.record.length > 0 &&
-            props.record
-              .filter((record) => record.text.toLowerCase().includes(search))
-              .map((record, key) => (
-                <div className="todo__list" key={key}>
-                  <p className="number">{key + 1}</p>
-                  <div
-                    onClick={() => {
-                      setId(record.id);
-                      setKey(key);
-                      setDetailsTime(
-                        Moment(record.timestamp.toDate()).format("LLLL")
+                              <span
+                                className="delete"
+                                onClick={() =>
+                                  handleDeleteModal(key, record.id)
+                                }
+                              >
+                                <DeleteForeverIcon />
+                              </span>
+                              <span
+                                className="edit"
+                                onClick={() =>
+                                  handleUpdateModal(key, record.id, record.text)
+                                }
+                              >
+                                <EditIcon />
+                              </span>
+                            </div>
+                          )}
+                        </Draggable>
                       );
-                      setDetailsText(record.text);
-                      setDetailsModal(true);
-                    }}
-                  >
-                    <p>{record.text}</p>
-                  </div>
-
-                  <span
-                    className="delete"
-                    onClick={() => handleDeleteModal(key, record.id)}
-                  >
-                    <DeleteForeverIcon />
-                  </span>
-                  <span
-                    className="edit"
-                    onClick={() =>
-                      handleUpdateModal(key, record.id, record.text)
-                    }
-                  >
-                    <EditIcon />
-                  </span>
-                </div>
-              ))}
-        </div>
+                    })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
 
       {/* Add Record Modal */}
@@ -416,12 +467,15 @@ const mapStateToProps = (state) => {
   return {
     user: state.userState.user.email,
     record: state.recordState.todoRecord,
+    recordArray: state.recordState.todoRecordArray,
     loading: state.loadingState.loading,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   post: (payload) => dispatch(postTodoRecordAPI(payload)),
+  tmpPost: (payload) => dispatch(tmpPostAPI(payload)),
+  fetchRecordArray: (payload) => dispatch(getTodoRecordArrayApi(payload)),
   fetch: (payload) => dispatch(getTodoRecordAPI(payload)),
   update: (payload) => dispatch(updateTodoRecordAPI(payload)),
   delete: (payload) => dispatch(deleteTodoRecordAPI(payload)),

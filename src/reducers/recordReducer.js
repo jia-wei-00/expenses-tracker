@@ -2,12 +2,14 @@ import {
   GET_RECORD,
   GET_HISTORY,
   GET_TODO_RECORD,
+  GET_TODO_RECORD_ARRAY,
 } from "../actions/actionType";
 
 export const iniState = {
   record: [],
   history: [],
   todoRecord: [],
+  todoRecordArray: [],
 };
 
 const recordReducer = (state = iniState, action) => {
@@ -26,6 +28,11 @@ const recordReducer = (state = iniState, action) => {
       return {
         ...state,
         todoRecord: action.payload,
+      };
+    case GET_TODO_RECORD_ARRAY:
+      return {
+        ...state,
+        todoRecordArray: action.payload,
       };
     default:
       return state;

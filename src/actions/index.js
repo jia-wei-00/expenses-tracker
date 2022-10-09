@@ -1,12 +1,12 @@
-import { auth } from "../firebase";
+import db, { auth, fieldValue } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
-import db from "../firebase";
 import {
   SET_USER,
   GET_RECORD,
   SET_LOADING,
   GET_HISTORY,
   GET_TODO_RECORD,
+  GET_TODO_RECORD_ARRAY,
 } from "./actionType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +28,11 @@ export const getHistory = (payload) => ({
 
 export const getTodoRecord = (payload) => ({
   type: GET_TODO_RECORD,
+  payload: payload,
+});
+
+export const getTodoRecordArray = (payload) => ({
+  type: GET_TODO_RECORD_ARRAY,
   payload: payload,
 });
 
@@ -54,6 +59,42 @@ export function resetPassword(payload) {
   };
 }
 
+export function tmpPostAPI(payload) {
+  return (dispatch) => {
+    const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
+
+    db.collection("expense__tracker")
+      .doc(payload.user)
+      .collection("tpm__todo")
+      .doc("tmp__todo__list")
+      .update({
+        todo__array: fieldValue.arrayUnion(
+          payload.text + "," + payload.timestamp
+        ),
+      })
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Add Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      })
+      .catch((error) => {
+        console.log(error.message);
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      });
+  };
+}
+
 export function postTodoRecordAPI(payload) {
   return (dispatch) => {
     const id = toast.loading("Please wait...");
@@ -62,6 +103,7 @@ export function postTodoRecordAPI(payload) {
       .doc(payload.user)
       .collection("todo__list")
       .add({
+        index: payload.index,
         text: payload.text,
         timestamp: payload.timestamp,
       })
@@ -93,7 +135,7 @@ export function getTodoRecordAPI(data) {
     db.collection("expense__tracker")
       .doc(data.user)
       .collection("todo__list")
-      .orderBy("timestamp", "asc")
+      .orderBy("index", "asc")
       .onSnapshot((snapshot) => {
         payload = snapshot.docs.map((doc) => {
           const data = doc.data();
@@ -101,6 +143,22 @@ export function getTodoRecordAPI(data) {
           return { id, ...data };
         });
         dispatch(getTodoRecord(payload));
+      });
+  };
+}
+
+export function getTodoRecordArrayApi(data) {
+  return (dispatch) => {
+    let payload;
+
+    db.collection("expense__tracker")
+      .doc(data.user)
+      .collection("tpm__todo")
+      .onSnapshot((snapshot) => {
+        payload = snapshot.docs.map((doc) => {
+          return doc.data();
+        });
+        dispatch(getTodoRecordArray(payload));
       });
   };
 }
