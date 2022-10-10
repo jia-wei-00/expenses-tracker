@@ -3,6 +3,7 @@ import {
   GET_HISTORY,
   GET_TODO_RECORD,
   GET_TODO_RECORD_ARRAY,
+  SET_ARRAY,
 } from "../actions/actionType";
 
 export const iniState = {
@@ -10,6 +11,7 @@ export const iniState = {
   history: [],
   todoRecord: [],
   todoRecordArray: [],
+  setArray: [],
 };
 
 const recordReducer = (state = iniState, action) => {
@@ -33,6 +35,11 @@ const recordReducer = (state = iniState, action) => {
       return {
         ...state,
         todoRecordArray: action.payload,
+      };
+    case SET_ARRAY:
+      return {
+        ...state,
+        setArray: action.payload,
       };
     default:
       return state;

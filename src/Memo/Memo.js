@@ -9,6 +9,7 @@ import {
   tmpPostAPI,
   getTodoRecordArrayApi,
   updateTodoRecordArray,
+  checkArrayExists,
 } from "../actions";
 import Button from "@mui/material/Button";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -89,7 +90,6 @@ const Memo = (props) => {
   const [reduxRecord, updateReduxRecord] = useState(props.record);
 
   function handleOnDragEnd(result) {
-    console.log(result, "dragEnd");
     if (!result.destination) return;
 
     const items = Array.from(reduxRecord);
@@ -100,13 +100,14 @@ const Memo = (props) => {
     handleUpdateTodoArray();
   }
 
-  console.log(props.recordArray);
+  // console.log(props.recordArray);
   let timestamp = firebase.firestore.Timestamp.now().toDate();
 
   const handlePost = (e) => {
     e.preventDefault();
 
     const payload = {
+      exists: props.setArray.length,
       index: props.record.length,
       record: props.record,
       user: props.user,
@@ -179,6 +180,8 @@ const Memo = (props) => {
 
       await props.fetch(payload);
       await props.fetchRecordArray(payload);
+      await props.checkArrayExists(payload);
+
       updateReduxRecord(props.record);
     };
 
@@ -480,6 +483,7 @@ const mapStateToProps = (state) => {
     user: state.userState.user.email,
     record: state.recordState.todoRecord,
     recordArray: state.recordState.todoRecordArray,
+    setArray: state.recordState.setArray,
     loading: state.loadingState.loading,
   };
 };
@@ -492,6 +496,7 @@ const mapDispatchToProps = (dispatch) => ({
   fetch: (payload) => dispatch(getTodoRecordAPI(payload)),
   update: (payload) => dispatch(updateTodoRecordAPI(payload)),
   delete: (payload) => dispatch(deleteTodoRecordAPI(payload)),
+  checkArrayExists: (payload) => dispatch(checkArrayExists(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Memo);

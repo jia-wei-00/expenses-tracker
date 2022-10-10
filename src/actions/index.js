@@ -7,6 +7,7 @@ import {
   GET_HISTORY,
   GET_TODO_RECORD,
   GET_TODO_RECORD_ARRAY,
+  SET_ARRAY,
 } from "./actionType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -41,6 +42,11 @@ export const setUser = (payload) => ({
   payload: payload,
 });
 
+export const checkArray = (payload) => ({
+  type: SET_ARRAY,
+  payload: payload,
+});
+
 export function resetPassword(payload) {
   return async (dispatch) => {
     dispatch(setLoading(true));
@@ -59,40 +65,89 @@ export function resetPassword(payload) {
   };
 }
 
+export function checkArrayExists(payloads) {
+  return (dispatch) => {
+    let payload;
+    db.collection("expense__tracker")
+      .doc(payloads.user)
+      .collection("tpm__todo")
+      .onSnapshot((snapshot) => {
+        payload = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          const id = doc.id;
+          return { id, ...data };
+        });
+        dispatch(checkArray(payload));
+      });
+  };
+}
+
 export function tmpPostAPI(payload) {
   return (dispatch) => {
     const id = toast.loading("Please wait...");
     dispatch(setLoading(true));
 
-    db.collection("expense__tracker")
-      .doc(payload.user)
-      .collection("tpm__todo")
-      .doc("tmp__todo__list")
-      .update({
-        todo__array: fieldValue.arrayUnion({
-          text: payload.text,
-          timestamp: payload.timestamp,
-        }),
-      })
-      .then((success) => {
-        toast.update(id, {
-          render: "Successfully Add Data",
-          type: "success",
-          isLoading: false,
-          autoClose: 5000,
+    if (payload.exists > 0) {
+      db.collection("expense__tracker")
+        .doc(payload.user)
+        .collection("tpm__todo")
+        .doc("tmp__todo__list")
+        .update({
+          todo__array: fieldValue.arrayUnion({
+            text: payload.text,
+            timestamp: payload.timestamp,
+          }),
+        })
+        .then((success) => {
+          toast.update(id, {
+            render: "Successfully Add Data",
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+          });
+          dispatch(setLoading(false));
+        })
+        .catch((error) => {
+          console.log(error.message);
+          toast.update(id, {
+            render: error.message,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+          });
+          dispatch(setLoading(false));
         });
-        dispatch(setLoading(false));
-      })
-      .catch((error) => {
-        console.log(error.message);
-        toast.update(id, {
-          render: error.message,
-          type: "error",
-          isLoading: false,
-          autoClose: 5000,
+    } else {
+      db.collection("expense__tracker")
+        .doc(payload.user)
+        .collection("tpm__todo")
+        .doc("tmp__todo__list")
+        .add({
+          todo__array: fieldValue.arrayUnion({
+            text: payload.text,
+            timestamp: payload.timestamp,
+          }),
+        })
+        .then((success) => {
+          toast.update(id, {
+            render: "Successfully Add Data",
+            type: "success",
+            isLoading: false,
+            autoClose: 5000,
+          });
+          dispatch(setLoading(false));
+        })
+        .catch((error) => {
+          console.log(error.message);
+          toast.update(id, {
+            render: error.message,
+            type: "error",
+            isLoading: false,
+            autoClose: 5000,
+          });
+          dispatch(setLoading(false));
         });
-        dispatch(setLoading(false));
-      });
+    }
   };
 }
 
@@ -138,7 +193,6 @@ export function postTodoRecordAPI(payload) {
       .doc(payload.user)
       .collection("todo__list")
       .add({
-        index: payload.index,
         text: payload.text,
         timestamp: payload.timestamp,
       })
