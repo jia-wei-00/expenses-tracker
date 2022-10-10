@@ -8,6 +8,7 @@ import {
   updateTodoRecordAPI,
   tmpPostAPI,
   getTodoRecordArrayApi,
+  updateTodoRecordArray,
 } from "../actions";
 import Button from "@mui/material/Button";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -96,9 +97,10 @@ const Memo = (props) => {
     items.splice(result.destination.index, 0, reorderedItem);
 
     updateReduxRecord(items);
+    handleUpdateTodoArray();
   }
 
-  console.log(reduxRecord);
+  console.log(props.recordArray);
   let timestamp = firebase.firestore.Timestamp.now().toDate();
 
   const handlePost = (e) => {
@@ -112,9 +114,19 @@ const Memo = (props) => {
       timestamp: timestamp,
     };
 
-    props.post(payload);
+    props.tmpPost(payload);
     reset(e);
     setAddModal(false);
+  };
+
+  const handleUpdateTodoArray = () => {
+    const payload = {
+      array: reduxRecord,
+      user: props.user,
+      timestamp: timestamp,
+    };
+
+    props.updateArray(payload);
   };
 
   const handleDeleteModal = (key, id) => {
@@ -476,6 +488,7 @@ const mapDispatchToProps = (dispatch) => ({
   post: (payload) => dispatch(postTodoRecordAPI(payload)),
   tmpPost: (payload) => dispatch(tmpPostAPI(payload)),
   fetchRecordArray: (payload) => dispatch(getTodoRecordArrayApi(payload)),
+  updateArray: (payload) => dispatch(updateTodoRecordArray(payload)),
   fetch: (payload) => dispatch(getTodoRecordAPI(payload)),
   update: (payload) => dispatch(updateTodoRecordAPI(payload)),
   delete: (payload) => dispatch(deleteTodoRecordAPI(payload)),

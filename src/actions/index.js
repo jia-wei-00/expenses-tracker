@@ -69,9 +69,44 @@ export function tmpPostAPI(payload) {
       .collection("tpm__todo")
       .doc("tmp__todo__list")
       .update({
-        todo__array: fieldValue.arrayUnion(
-          payload.text + "," + payload.timestamp
-        ),
+        todo__array: fieldValue.arrayUnion({
+          text: payload.text,
+          timestamp: payload.timestamp,
+        }),
+      })
+      .then((success) => {
+        toast.update(id, {
+          render: "Successfully Add Data",
+          type: "success",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      })
+      .catch((error) => {
+        console.log(error.message);
+        toast.update(id, {
+          render: error.message,
+          type: "error",
+          isLoading: false,
+          autoClose: 5000,
+        });
+        dispatch(setLoading(false));
+      });
+  };
+}
+
+export function updateTodoRecordArray(payload) {
+  return (dispatch) => {
+    const id = toast.loading("Please wait...");
+    dispatch(setLoading(true));
+
+    db.collection("expense__tracker")
+      .doc(payload.user)
+      .collection("tpm__todo")
+      .doc("tmp__todo__list")
+      .update({
+        todo__array: payload.array,
       })
       .then((success) => {
         toast.update(id, {
