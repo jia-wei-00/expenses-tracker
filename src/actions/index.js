@@ -106,6 +106,7 @@ export function tmpPostAPI(payload) {
             autoClose: 5000,
           });
           dispatch(setLoading(false));
+          dispatch(getTodoRecordArrayApi(payload.user));
         })
         .catch((error) => {
           console.log(error.message);
@@ -122,8 +123,9 @@ export function tmpPostAPI(payload) {
         .doc(payload.user)
         .collection("tpm__todo")
         .doc("tmp__todo__list")
-        .add({
+        .set({
           todo__array: fieldValue.arrayUnion({
+            index: payload.index,
             text: payload.text,
             timestamp: payload.timestamp,
           }),
@@ -136,6 +138,7 @@ export function tmpPostAPI(payload) {
             autoClose: 5000,
           });
           dispatch(setLoading(false));
+          dispatch(getTodoRecordArrayApi(payload.user));
         })
         .catch((error) => {
           console.log(error.message);

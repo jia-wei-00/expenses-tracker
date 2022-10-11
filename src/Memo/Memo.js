@@ -87,7 +87,9 @@ const Memo = (props) => {
   const [detailsModal, setDetailsModal] = useState(false);
   const [detailsTime, setDetailsTime] = useState("");
   const [detailsText, setDetailsText] = useState("");
-  const [reduxRecord, updateReduxRecord] = useState(props.record);
+  const [reduxRecord, updateReduxRecord] = useState([]);
+
+  console.log(reduxRecord, "hi");
 
   function handleOnDragEnd(result) {
     if (!result.destination) return;
@@ -182,7 +184,11 @@ const Memo = (props) => {
       await props.fetchRecordArray(payload);
       await props.checkArrayExists(payload);
 
-      updateReduxRecord(props.record);
+      if (props.recordArray.length > 0) {
+        if (props.recordArray[0].todo__array.length > 0) {
+          updateReduxRecord(props.recordArray[0].todo__array);
+        }
+      }
     };
 
     fetchRecord().catch(console.error);
@@ -221,7 +227,7 @@ const Memo = (props) => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {props.recordArray.length > 0 &&
+                {reduxRecord.length > 0 &&
                   reduxRecord
                     .filter((record) =>
                       record.text.toLowerCase().includes(search)
