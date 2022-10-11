@@ -6,7 +6,7 @@ import {
   getTodoRecordAPI,
   deleteTodoRecordAPI,
   updateTodoRecordAPI,
-  tmpPostAPI,
+  postRecordArrayAPI,
   getTodoRecordArrayApi,
   updateTodoRecordArray,
   checkArrayExists,
@@ -87,46 +87,42 @@ const Memo = (props) => {
   const [detailsModal, setDetailsModal] = useState(false);
   const [detailsTime, setDetailsTime] = useState("");
   const [detailsText, setDetailsText] = useState("");
-  const [reduxRecord, updateReduxRecord] = useState([]);
+  const [checkExistsArray, setCheckExistsArray] = useState("");
 
-  console.log(reduxRecord, "hi");
-
-  function handleOnDragEnd(result) {
+  const handleOnDragEnd = async (result) => {
     if (!result.destination) return;
 
-    const items = Array.from(reduxRecord);
+    const items = Array.from(props.recordArray[0].todo__array);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
-    updateReduxRecord(items);
-    handleUpdateTodoArray();
-  }
+    setCheckExistsArray(items);
+    handleUpdateTodoArray(items);
+  };
 
-  // console.log(props.recordArray);
+  // console.log(props.recordArray[0].todo__array);
   let timestamp = firebase.firestore.Timestamp.now().toDate();
 
   const handlePost = (e) => {
     e.preventDefault();
 
     const payload = {
-      exists: props.setArray.length,
-      index: props.record.length,
+      exists: checkExistsArray.length,
       record: props.record,
       user: props.user,
       text: addRecord,
       timestamp: timestamp,
     };
 
-    props.tmpPost(payload);
+    props.postArray(payload);
     reset(e);
     setAddModal(false);
   };
 
-  const handleUpdateTodoArray = () => {
+  const handleUpdateTodoArray = (array) => {
     const payload = {
-      array: reduxRecord,
+      array: array,
       user: props.user,
-      timestamp: timestamp,
     };
 
     props.updateArray(payload);
@@ -139,12 +135,20 @@ const Memo = (props) => {
   };
 
   const handleDelete = () => {
+    const array = checkExistsArray.filter((record, index) => index !== key);
+
     const payload = {
+      array: array,
       user: props.user,
-      id: id,
     };
 
-    props.delete(payload);
+    props.updateArray(payload);
+    // const payload = {
+    //   user: props.user,
+    //   id: id,
+    // };
+
+    // props.delete(payload);
 
     setDeleteModal(false);
   };
@@ -158,14 +162,22 @@ const Memo = (props) => {
 
   const handleUpdate = (e) => {
     e.preventDefault();
+    const array = checkExistsArray.map((record, index) => {
+      if (index === key) {
+        return { ...record, text: updateRecord };
+      } else {
+        return record;
+      }
+    });
 
     const payload = {
+      array: array,
       user: props.user,
-      id: id,
-      text: updateRecord,
     };
 
-    props.update(payload);
+    props.updateArray(payload);
+
+    // props.update(payload);
 
     setUpdateModal(false);
   };
@@ -182,17 +194,18 @@ const Memo = (props) => {
 
       await props.fetch(payload);
       await props.fetchRecordArray(payload);
-      await props.checkArrayExists(payload);
 
       if (props.recordArray.length > 0) {
         if (props.recordArray[0].todo__array.length > 0) {
-          updateReduxRecord(props.recordArray[0].todo__array);
+          setCheckExistsArray(props.recordArray[0].todo__array);
         }
       }
     };
 
     fetchRecord().catch(console.error);
-  }, [props.record.length, props.recordArray.length]);
+  }, [props.recordArray.length]);
+
+  // console.log(checkExistsArray[0].timestamp.seconds);
 
   return (
     <div className="memo">
@@ -227,16 +240,16 @@ const Memo = (props) => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {reduxRecord.length > 0 &&
-                  reduxRecord
+                {checkExistsArray.length > 0 &&
+                  checkExistsArray
                     .filter((record) =>
                       record.text.toLowerCase().includes(search)
                     )
                     .map((record, index) => {
                       return (
                         <Draggable
-                          key={record.id}
-                          draggableId={record.id}
+                          key={record.text}
+                          draggableId={record.text}
                           index={index}
                         >
                           {(provided) => (
@@ -266,7 +279,7 @@ const Memo = (props) => {
                               <span
                                 className="delete"
                                 onClick={() =>
-                                  handleDeleteModal(key, record.id)
+                                  handleDeleteModal(index, record.index)
                                 }
                               >
                                 <DeleteForeverIcon />
@@ -274,7 +287,11 @@ const Memo = (props) => {
                               <span
                                 className="edit"
                                 onClick={() =>
-                                  handleUpdateModal(key, record.id, record.text)
+                                  handleUpdateModal(
+                                    index,
+                                    record.index,
+                                    record.text
+                                  )
                                 }
                               >
                                 <EditIcon />
@@ -489,20 +506,18 @@ const mapStateToProps = (state) => {
     user: state.userState.user.email,
     record: state.recordState.todoRecord,
     recordArray: state.recordState.todoRecordArray,
-    setArray: state.recordState.setArray,
     loading: state.loadingState.loading,
   };
 };
 
 const mapDispatchToProps = (dispatch) => ({
   post: (payload) => dispatch(postTodoRecordAPI(payload)),
-  tmpPost: (payload) => dispatch(tmpPostAPI(payload)),
+  postArray: (payload) => dispatch(postRecordArrayAPI(payload)),
   fetchRecordArray: (payload) => dispatch(getTodoRecordArrayApi(payload)),
   updateArray: (payload) => dispatch(updateTodoRecordArray(payload)),
   fetch: (payload) => dispatch(getTodoRecordAPI(payload)),
   update: (payload) => dispatch(updateTodoRecordAPI(payload)),
   delete: (payload) => dispatch(deleteTodoRecordAPI(payload)),
-  checkArrayExists: (payload) => dispatch(checkArrayExists(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Memo);

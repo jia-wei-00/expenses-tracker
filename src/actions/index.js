@@ -7,7 +7,6 @@ import {
   GET_HISTORY,
   GET_TODO_RECORD,
   GET_TODO_RECORD_ARRAY,
-  SET_ARRAY,
 } from "./actionType";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -42,11 +41,6 @@ export const setUser = (payload) => ({
   payload: payload,
 });
 
-export const checkArray = (payload) => ({
-  type: SET_ARRAY,
-  payload: payload,
-});
-
 export function resetPassword(payload) {
   return async (dispatch) => {
     dispatch(setLoading(true));
@@ -65,24 +59,7 @@ export function resetPassword(payload) {
   };
 }
 
-export function checkArrayExists(payloads) {
-  return (dispatch) => {
-    let payload;
-    db.collection("expense__tracker")
-      .doc(payloads.user)
-      .collection("tpm__todo")
-      .onSnapshot((snapshot) => {
-        payload = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          const id = doc.id;
-          return { id, ...data };
-        });
-        dispatch(checkArray(payload));
-      });
-  };
-}
-
-export function tmpPostAPI(payload) {
+export function postRecordArrayAPI(payload) {
   return (dispatch) => {
     const id = toast.loading("Please wait...");
     dispatch(setLoading(true));
@@ -90,8 +67,8 @@ export function tmpPostAPI(payload) {
     if (payload.exists > 0) {
       db.collection("expense__tracker")
         .doc(payload.user)
-        .collection("tpm__todo")
-        .doc("tmp__todo__list")
+        .collection("todo__list")
+        .doc("todo__array")
         .update({
           todo__array: fieldValue.arrayUnion({
             text: payload.text,
@@ -106,6 +83,7 @@ export function tmpPostAPI(payload) {
             autoClose: 5000,
           });
           dispatch(setLoading(false));
+          console.log("gotdata");
           dispatch(getTodoRecordArrayApi(payload.user));
         })
         .catch((error) => {
@@ -121,11 +99,10 @@ export function tmpPostAPI(payload) {
     } else {
       db.collection("expense__tracker")
         .doc(payload.user)
-        .collection("tpm__todo")
-        .doc("tmp__todo__list")
+        .collection("todo__list")
+        .doc("todo__array")
         .set({
           todo__array: fieldValue.arrayUnion({
-            index: payload.index,
             text: payload.text,
             timestamp: payload.timestamp,
           }),
@@ -138,6 +115,7 @@ export function tmpPostAPI(payload) {
             autoClose: 5000,
           });
           dispatch(setLoading(false));
+          console.log("nodata");
           dispatch(getTodoRecordArrayApi(payload.user));
         })
         .catch((error) => {
@@ -161,19 +139,20 @@ export function updateTodoRecordArray(payload) {
 
     db.collection("expense__tracker")
       .doc(payload.user)
-      .collection("tpm__todo")
-      .doc("tmp__todo__list")
+      .collection("todo__list")
+      .doc("todo__array")
       .update({
         todo__array: payload.array,
       })
       .then((success) => {
         toast.update(id, {
-          render: "Successfully Add Data",
+          render: "Successfully Update Data",
           type: "success",
           isLoading: false,
           autoClose: 5000,
         });
         dispatch(setLoading(false));
+        dispatch(getTodoRecordArrayApi(payload.user));
       })
       .catch((error) => {
         console.log(error.message);
@@ -242,10 +221,9 @@ export function getTodoRecordAPI(data) {
 export function getTodoRecordArrayApi(data) {
   return (dispatch) => {
     let payload;
-
     db.collection("expense__tracker")
       .doc(data.user)
-      .collection("tpm__todo")
+      .collection("todo__list")
       .onSnapshot((snapshot) => {
         payload = snapshot.docs.map((doc) => {
           return doc.data();
