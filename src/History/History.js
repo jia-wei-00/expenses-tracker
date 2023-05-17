@@ -80,54 +80,91 @@ const History = (props) => {
   const [detailsType, setDetailsType] = useState("");
   const [detailsAmount, setDetailsAmount] = useState("");
   const [detailsCategory, setDetailsCategory] = useState("");
+  const [history, setHistory] = useState({});
+  const [expensesChartData, setExpenseChartData] = useState({});
+  const [incomeChartData, setIncomeChartData] = useState({});
+
+  console.log(history, "history");
+  console.log(expensesChartData, "expense");
+  console.log(incomeChartData, "income");
 
   let tmpDate = Moment(date).format("MMMM YYYY");
 
   const calculateAmount = async () => {
-    let tmpincome = 0;
-    let tmpexpense = 0;
-    let tmpfood = 0;
-    let tmptransport = 0;
-    let tmpentertain = 0;
-    let tmphousehold = 0;
-    let tmpothers = 0;
-    let tmpsalary = 0;
-    let tmpincomeothers = 0;
+    // let tmpincome = 0;
+    // let tmpexpense = 0;
+    // let tmpfood = 0;
+    // let tmptransport = 0;
+    // let tmpentertain = 0;
+    // let tmphousehold = 0;
+    // let tmpothers = 0;
+    // let tmpsalary = 0;
+    // let tmpincomeothers = 0;
 
-    await props.history.forEach((record) => {
-      if (record.type === "expense") {
-        tmpexpense += parseFloat(record.amount);
-        if (record.category === "Food") {
-          tmpfood += parseFloat(record.amount);
-        } else if (record.category === "Transportation") {
-          tmptransport += parseFloat(record.amount);
-        } else if (record.category === "Entertainment") {
-          tmpentertain += parseFloat(record.amount);
-        } else if (record.category === "Household") {
-          tmphousehold += parseFloat(record.amount);
-        } else if (record.category === "Others") {
-          tmpothers += parseFloat(record.amount);
+    const data = {};
+
+    props.history.forEach((record) => {
+      const { type, category, amount } = record;
+      const types = type.toLowerCase();
+      const categories = category.toLowerCase();
+      const amounts = amount.toLowerCase();
+
+      if (type === "expense" || type === "income") {
+
+        if (!data[types]) {
+          data[type] = {
+            total: 0,
+            categories: {},
+          };
         }
-      } else if (record.type === "income") {
-        tmpincome += parseFloat(record.amount);
-        if (record.category === "Salary") {
-          tmpsalary += parseFloat(record.amount);
-        } else if (record.category === "Others") {
-          tmpincomeothers += parseFloat(record.amount);
+        data[types].total += parseFloat(amounts);
+
+        if (categories) {
+          if (!data[types].categories[categories]) {
+            data[types].categories[categories] = 0;
+          }
+          data[types].categories[categories] += parseFloat(amounts);
         }
       }
     });
 
-    setFood(tmpfood);
-    setTransportation(tmptransport);
-    setEntertainment(tmpentertain);
-    setHousehold(tmphousehold);
-    setOthers(tmpothers);
-    setSalary(tmpsalary);
-    setIncomeOthers(tmpincomeothers);
-    setBalance(tmpincome - tmpexpense);
-    setExpense(tmpexpense);
-    setIncome(tmpincome);
+    setHistory(data);
+
+
+    // await props.history.forEach((record) => {
+    //   if (record.type === "expense") {
+    //     tmpexpense += parseFloat(record.amount);
+    //     if (record.category === "Food") {
+    //       tmpfood += parseFloat(record.amount);
+    //     } else if (record.category === "Transportation") {
+    //       tmptransport += parseFloat(record.amount);
+    //     } else if (record.category === "Entertainment") {
+    //       tmpentertain += parseFloat(record.amount);
+    //     } else if (record.category === "Household") {
+    //       tmphousehold += parseFloat(record.amount);
+    //     } else if (record.category === "Others") {
+    //       tmpothers += parseFloat(record.amount);
+    //     }
+    //   } else if (record.type === "income") {
+    //     tmpincome += parseFloat(record.amount);
+    //     if (record.category === "Salary") {
+    //       tmpsalary += parseFloat(record.amount);
+    //     } else if (record.category === "Others") {
+    //       tmpincomeothers += parseFloat(record.amount);
+    //     }
+    //   }
+    // });
+
+    // setFood(tmpfood);
+    // setTransportation(tmptransport);
+    // setEntertainment(tmpentertain);
+    // setHousehold(tmphousehold);
+    // setOthers(tmpothers);
+    // setSalary(tmpsalary);
+    // setIncomeOthers(tmpincomeothers);
+    // setBalance(tmpincome - tmpexpense);
+    // setExpense(tmpexpense);
+    // setIncome(tmpincome);
   };
 
   const fetchRecord = async () => {
@@ -308,6 +345,42 @@ const History = (props) => {
   useEffect(() => {
     fetchRecord();
     calculateAmount();
+
+    const fetchDatass = async () => {
+      const newData = {};
+
+      await props.history.map((record, key) => {
+        if (record.type === "expense") {
+          const category = record.category;
+          if (!newData[category]) {
+            newData[category] = [];
+          }
+          newData[category] = [
+            ...newData[category],
+            [record.name, parseFloat(record.amount)]
+          ];
+        } else if (record.type === "income") {
+          const category = record.category;
+          if (!newData[category]) {
+            newData[category] = [];
+          }
+          newData[category] = [
+            ...newData[category],
+            [record.name, parseFloat(record.amount)]
+          ];
+        }
+      });
+
+      // Update state with the new data
+
+      setExpenseChartData(newData);
+
+      setIncomeChartData(newData);
+
+    };
+
+    fetchDatass();
+
 
     const fetchData = async () => {
       if (alignment === "expense") {
