@@ -58,20 +58,6 @@ const History = (props) => {
   const [balance, setBalance] = useState(0);
   const [expense, setExpense] = useState(0);
   const [income, setIncome] = useState(0);
-  const [food, setFood] = useState(0);
-  const [transportation, setTransportation] = useState(0);
-  const [entertainment, setEntertainment] = useState(0);
-  const [household, setHousehold] = useState(0);
-  const [others, setOthers] = useState(0);
-  const [salary, setSalary] = useState(0);
-  const [incomeOthers, setIncomeOthers] = useState(0);
-  const [foodChart, setFoodChart] = useState([]);
-  const [transportChart, setTransportChart] = useState([]);
-  const [entertainmentChart, setEntertainmentChart] = useState([]);
-  const [householdChart, setHouseholdChart] = useState([]);
-  const [othersChart, setOthersChart] = useState([]);
-  const [salaryChart, setSalaryChart] = useState([]);
-  const [incomeOthersChart, setIncomeOthersChart] = useState([]);
   const [alignment, setAlignment] = useState("expense");
   const [search, setSearch] = useState("");
   const [detailsModal, setDetailsModal] = useState(false);
@@ -81,27 +67,17 @@ const History = (props) => {
   const [detailsAmount, setDetailsAmount] = useState("");
   const [detailsCategory, setDetailsCategory] = useState("");
   const [history, setHistory] = useState({});
-  const [expensesChartData, setExpenseChartData] = useState({});
-  const [incomeChartData, setIncomeChartData] = useState({});
-
-  console.log(history, "history");
-  console.log(expensesChartData, "expense");
-  console.log(incomeChartData, "income");
+  const [expensesChartData, setExpenseChartData] = useState([]);
+  const [incomeChartData, setIncomeChartData] = useState([]);
 
   let tmpDate = Moment(date).format("MMMM YYYY");
 
-  const calculateAmount = async () => {
-    // let tmpincome = 0;
-    // let tmpexpense = 0;
-    // let tmpfood = 0;
-    // let tmptransport = 0;
-    // let tmpentertain = 0;
-    // let tmphousehold = 0;
-    // let tmpothers = 0;
-    // let tmpsalary = 0;
-    // let tmpincomeothers = 0;
+  // console.log(expensesChartData);
 
+  const calculateAmount = async () => {
     const data = {};
+    let tmpIncome = 0;
+    let tmpExpense = 0;
 
     props.history.forEach((record) => {
       const { type, category, amount } = record;
@@ -109,8 +85,13 @@ const History = (props) => {
       const categories = category.toLowerCase();
       const amounts = amount.toLowerCase();
 
-      if (type === "expense" || type === "income") {
+      if (type === "expense") {
+        tmpIncome += parseInt(amount);
+      } else if (type === "income") {
+        tmpExpense += parseInt(amount);
+      }
 
+      if (type === "expense" || type === "income") {
         if (!data[types]) {
           data[type] = {
             total: 0,
@@ -128,43 +109,10 @@ const History = (props) => {
       }
     });
 
+    setExpense(tmpExpense);
+    setIncome(tmpIncome);
+    setBalance(tmpIncome - tmpExpense);
     setHistory(data);
-
-
-    // await props.history.forEach((record) => {
-    //   if (record.type === "expense") {
-    //     tmpexpense += parseFloat(record.amount);
-    //     if (record.category === "Food") {
-    //       tmpfood += parseFloat(record.amount);
-    //     } else if (record.category === "Transportation") {
-    //       tmptransport += parseFloat(record.amount);
-    //     } else if (record.category === "Entertainment") {
-    //       tmpentertain += parseFloat(record.amount);
-    //     } else if (record.category === "Household") {
-    //       tmphousehold += parseFloat(record.amount);
-    //     } else if (record.category === "Others") {
-    //       tmpothers += parseFloat(record.amount);
-    //     }
-    //   } else if (record.type === "income") {
-    //     tmpincome += parseFloat(record.amount);
-    //     if (record.category === "Salary") {
-    //       tmpsalary += parseFloat(record.amount);
-    //     } else if (record.category === "Others") {
-    //       tmpincomeothers += parseFloat(record.amount);
-    //     }
-    //   }
-    // });
-
-    // setFood(tmpfood);
-    // setTransportation(tmptransport);
-    // setEntertainment(tmpentertain);
-    // setHousehold(tmphousehold);
-    // setOthers(tmpothers);
-    // setSalary(tmpsalary);
-    // setIncomeOthers(tmpincomeothers);
-    // setBalance(tmpincome - tmpexpense);
-    // setExpense(tmpexpense);
-    // setIncome(tmpincome);
   };
 
   const fetchRecord = async () => {
@@ -216,63 +164,22 @@ const History = (props) => {
       {
         name: alignment,
         colorByPoint: true,
-        data: [
-          {
-            name: "Food",
-            y: food,
-            drilldown: "Food",
-          },
-          {
-            name: "Transportation",
-            y: transportation,
-            drilldown: "Transportation",
-          },
-          {
-            name: "Entertainment",
-            y: entertainment,
-            drilldown: "Entertainment",
-          },
-          {
-            name: "Household",
-            y: household,
-            drilldown: "Household",
-          },
-          {
-            name: "Others",
-            y: others,
-            drilldown: "Others",
-          },
-        ],
+        data: Object.keys(expensesChartData).map((expenses) => ({
+          name: expenses,
+          y: expensesChartData[expenses].reduce(
+            (total, details) => total + details[1],
+            0
+          ),
+          drilldown: expenses,
+        })),
       },
     ],
     drilldown: {
-      series: [
-        {
-          name: "Food",
-          id: "Food",
-          data: foodChart,
-        },
-        {
-          name: "Transportation",
-          id: "Transportation",
-          data: transportChart,
-        },
-        {
-          name: "Entertainment",
-          id: "Entertainment",
-          data: entertainmentChart,
-        },
-        {
-          name: "Household",
-          id: "Household",
-          data: householdChart,
-        },
-        {
-          name: "Others",
-          id: "Others",
-          data: othersChart,
-        },
-      ],
+      series: Object.keys(expensesChartData).map((expenses) => ({
+        name: expenses,
+        id: expenses,
+        data: expensesChartData[expenses],
+      })),
     },
   };
 
@@ -312,33 +219,23 @@ const History = (props) => {
       {
         name: alignment,
         colorByPoint: true,
-        data: [
-          {
-            name: "Salary",
-            y: salary,
-            drilldown: "Salary",
-          },
-          {
-            name: "Others",
-            y: incomeOthers,
-            drilldown: "Others",
-          },
-        ],
+        //keys is the index but here is not index is category name. So we can add amount by calling the array and name *incomeChartData[income]*
+        data: Object.keys(incomeChartData).map((income) => ({
+          name: income,
+          y: incomeChartData[income].reduce(
+            (total, details) => total + details[1],
+            0
+          ),
+          drilldown: income,
+        })),
       },
     ],
     drilldown: {
-      series: [
-        {
-          name: "Salary",
-          id: "Salary",
-          data: salaryChart,
-        },
-        {
-          name: "Others",
-          id: "Others",
-          data: incomeOthersChart,
-        },
-      ],
+      series: Object.keys(incomeChartData).map((income) => ({
+        name: income,
+        id: income,
+        data: incomeChartData[income],
+      })),
     },
   };
 
@@ -346,99 +243,33 @@ const History = (props) => {
     fetchRecord();
     calculateAmount();
 
-    const fetchDatass = async () => {
-      const newData = {};
+    const fetchData = async () => {
+      const expensesData = [];
+      const incomeData = [];
 
       await props.history.map((record, key) => {
         if (record.type === "expense") {
           const category = record.category;
-          if (!newData[category]) {
-            newData[category] = [];
+          if (!expensesData[category]) {
+            expensesData[category] = [];
           }
-          newData[category] = [
-            ...newData[category],
-            [record.name, parseFloat(record.amount)]
-          ];
+          expensesData[category].push([record.name, parseFloat(record.amount)]);
         } else if (record.type === "income") {
           const category = record.category;
-          if (!newData[category]) {
-            newData[category] = [];
+          if (!incomeData[category]) {
+            incomeData[category] = [];
           }
-          newData[category] = [
-            ...newData[category],
-            [record.name, parseFloat(record.amount)]
-          ];
+          incomeData[category].push([record.name, parseFloat(record.amount)]);
         }
       });
 
       // Update state with the new data
 
-      setExpenseChartData(newData);
+      setExpenseChartData(expensesData);
 
-      setIncomeChartData(newData);
-
+      setIncomeChartData(incomeData);
     };
 
-    fetchDatass();
-
-
-    const fetchData = async () => {
-      if (alignment === "expense") {
-        setFoodChart([]);
-        setTransportChart([]);
-        setEntertainmentChart([]);
-        setHouseholdChart([]);
-        setOthersChart([]);
-        await props.history.map((record, key) => {
-          if (record.type === "expense") {
-            if (record.category === "Food") {
-              setFoodChart((foodChart) => [
-                ...foodChart,
-                [record.name, parseFloat(record.amount)],
-              ]);
-            } else if (record.category === "Transportation") {
-              setTransportChart((transportChart) => [
-                ...transportChart,
-                [record.name, parseFloat(record.amount)],
-              ]);
-            } else if (record.category === "Entertainment") {
-              setEntertainmentChart((entertainmentChart) => [
-                ...entertainmentChart,
-                [record.name, parseFloat(record.amount)],
-              ]);
-            } else if (record.category === "Household") {
-              setHouseholdChart((householdChart) => [
-                ...householdChart,
-                [record.name, parseFloat(record.amount)],
-              ]);
-            } else if (record.category === "Others") {
-              setOthersChart((othersChart) => [
-                ...othersChart,
-                [record.name, parseFloat(record.amount)],
-              ]);
-            }
-          }
-        });
-      } else if (alignment === "income") {
-        setSalaryChart([]);
-        setIncomeOthersChart([]);
-        await props.history.map((record, key) => {
-          if (record.type === "income") {
-            if (record.category === "Salary") {
-              setSalaryChart((salaryChart) => [
-                ...salaryChart,
-                [record.name, parseFloat(record.amount)],
-              ]);
-            } else if (record.category === "Others") {
-              setIncomeOthersChart((incomeOthersChart) => [
-                ...incomeOthersChart,
-                [record.name, parseFloat(record.amount)],
-              ]);
-            }
-          }
-        });
-      }
-    };
     fetchData().catch(console.error);
   }, [props.history.length, date, alignment]);
 
