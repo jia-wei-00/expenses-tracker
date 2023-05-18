@@ -85,9 +85,9 @@ const History = (props) => {
       const categories = category.toLowerCase();
       const amounts = amount.toLowerCase();
 
-      if (type === "expense") {
+      if (type === "income") {
         tmpIncome += parseInt(amount);
-      } else if (type === "income") {
+      } else if (type === "expense") {
         tmpExpense += parseInt(amount);
       }
 
